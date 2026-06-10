@@ -1,0 +1,53 @@
+# Packages
+# Reference: http://golang.org/doc/code.html#GOPATH
+# Reference: https://github.com/github/gitignore/blob/main/Go.gitignore
+
+# Binaries and tools
+bin/
+dist/
+# Exclude single CLI binary files generated during build
+ai-issue
+ai-issue.exe
+
+# Testing
+*.test
+*.out
+
+# Dependency directories (Usually not needed in go.mod environment, added for prevention)
+vendor/
+
+# Temporary files created by Go and Editors
+go.work
+go.work.sum
+.project
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# ==========================================
+# macOS Specific Settings (OSX System Files)
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon_
+._*
+.Spotlight-V100
+.Trashes
+~.dep
+.AppleDB
+.AppleDesktop
+
+# ==========================================
+# Project Specific Security Settings (Important!)
+# ==========================================
+# Exclude local configuration and secrets used for testing
+# (Enforces FRAMEWORK.md rule: Secrets are not stored in source code)
+config.yaml
+config.toml
+.env
+*.local
