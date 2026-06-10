@@ -6,8 +6,8 @@
 bin/
 dist/
 # Exclude single CLI binary files generated during build
-ai-issue
-ai-issue.exe
+/ai-issue
+/ai-issue.exe
 
 # Testing
 *.test
