@@ -65,3 +65,72 @@ func TestCreateIssueFailure(t *testing.T) {
 		t.Fatalf("error = %v, want publication failure message", err)
 	}
 }
+
+func TestCheckRepositoryAccessSuccess(t *testing.T) {
+	var gotMethod string
+	var gotPath string
+	var gotAuth string
+	var gotAccept string
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotMethod = r.Method
+		gotPath = r.URL.Path
+		gotAuth = r.Header.Get("Authorization")
+		gotAccept = r.Header.Get("Accept")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"full_name":"company/backend"}`))
+	}))
+	defer server.Close()
+
+	client := &Client{
+		Token:      "token-123",
+		HTTPClient: server.Client(),
+		BaseURL:    server.URL,
+	}
+
+	if err := client.CheckRepositoryAccess("company/backend"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if gotMethod != http.MethodGet {
+		t.Fatalf("method = %q, want %q", gotMethod, http.MethodGet)
+	}
+	if gotPath != "/repos/company/backend" {
+		t.Fatalf("path = %q, want %q", gotPath, "/repos/company/backend")
+	}
+	if gotAuth != "token token-123" {
+		t.Fatalf("auth = %q, want %q", gotAuth, "token token-123")
+	}
+	if gotAccept != "application/vnd.github+json" {
+		t.Fatalf("accept = %q, want %q", gotAccept, "application/vnd.github+json")
+	}
+}
+
+func TestCheckRepositoryAccessFailureParsesMessage(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = w.Write([]byte(`{"message":"fine-grained tokens are not allowed for this org"}`))
+	}))
+	defer server.Close()
+
+	client := &Client{
+		Token:      "token-123",
+		HTTPClient: server.Client(),
+		BaseURL:    server.URL,
+	}
+
+	err := client.CheckRepositoryAccess("company/backend")
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+
+	accessErr, ok := err.(*RepositoryAccessError)
+	if !ok {
+		t.Fatalf("error type = %T, want *RepositoryAccessError", err)
+	}
+	if accessErr.Status != http.StatusText(http.StatusForbidden) {
+		t.Fatalf("status = %q, want %q", accessErr.Status, http.StatusText(http.StatusForbidden))
+	}
+	if accessErr.Message != "fine-grained tokens are not allowed for this org" {
+		t.Fatalf("message = %q, want %q", accessErr.Message, "fine-grained tokens are not allowed for this org")
+	}
+}
