@@ -71,7 +71,7 @@ This makes it immediately obvious that:
 ### Option 1: Install via Go
 
 ```bash
-go install github.com/replworks/ai-issue@latest
+go install github.com/replworks/ai-issue/cmd/ai-issue@latest
 ```
 
 ### Option 2: Build from Source

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"ai-issue/internal/adapter/github"
-	"ai-issue/internal/construction"
-	"ai-issue/internal/domain"
+	"github.com/replworks/ai-issue/internal/adapter/github"
+	"github.com/replworks/ai-issue/internal/construction"
+	"github.com/replworks/ai-issue/internal/domain"
 )
 
 func TestEndToEndPublicationFlow(t *testing.T) {

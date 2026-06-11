@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"ai-issue/internal/cli"
+	"github.com/replworks/ai-issue/internal/cli"
 )
 
 var (

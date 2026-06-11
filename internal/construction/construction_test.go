@@ -3,7 +3,7 @@ package construction
 import (
 	"testing"
 
-	"ai-issue/internal/domain"
+	"github.com/replworks/ai-issue/internal/domain"
 )
 
 func TestBuildPublishableIssue(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"ai-issue/internal/extraction"
+	"github.com/replworks/ai-issue/internal/extraction"
 )
 
 type Client struct {

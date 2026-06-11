@@ -1,10 +1,11 @@
 package publisher
 
 import (
-	"ai-issue/internal/adapter/github"
-	"ai-issue/internal/domain"
 	"fmt"
 	"strings"
+
+	"github.com/replworks/ai-issue/internal/adapter/github"
+	"github.com/replworks/ai-issue/internal/domain"
 )
 
 type Service struct {

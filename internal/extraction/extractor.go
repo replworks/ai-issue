@@ -3,7 +3,7 @@ package extraction
 import (
 	"strings"
 
-	"ai-issue/internal/domain"
+	"github.com/replworks/ai-issue/internal/domain"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/text"

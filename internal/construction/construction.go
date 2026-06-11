@@ -3,7 +3,7 @@ package construction
 import (
 	"strings"
 
-	"ai-issue/internal/domain"
+	"github.com/replworks/ai-issue/internal/domain"
 )
 
 func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherName string) (*domain.PublishableIssue, error) {

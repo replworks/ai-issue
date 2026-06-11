@@ -15,7 +15,7 @@ func TestFrameworkCompliance(t *testing.T) {
 	assertFileExists(t, root, "internal/cli/publish.go")
 	assertFileExists(t, root, "internal/cli/diagnose.go")
 
-	assertContains(t, root, "go.mod", "module ai-issue")
+	assertContains(t, root, "go.mod", "module github.com/replworks/ai-issue")
 	assertContains(t, root, "go.mod", "go 1.24")
 	assertContains(t, root, "internal/cli/root.go", "github.com/spf13/cobra")
 	assertContains(t, root, "internal/extraction/extractor.go", "github.com/yuin/goldmark")

@@ -9,12 +9,12 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
-	"ai-issue/internal/adapter/github"
-	"ai-issue/internal/construction"
-	"ai-issue/internal/extraction"
-	"ai-issue/internal/preview"
-	"ai-issue/internal/publisher"
-	"ai-issue/internal/repository"
+	"github.com/replworks/ai-issue/internal/adapter/github"
+	"github.com/replworks/ai-issue/internal/construction"
+	"github.com/replworks/ai-issue/internal/extraction"
+	"github.com/replworks/ai-issue/internal/preview"
+	"github.com/replworks/ai-issue/internal/publisher"
+	"github.com/replworks/ai-issue/internal/repository"
 )
 
 var publishCmd = &cobra.Command{
