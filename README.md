@@ -1,268 +1,78 @@
 # AI Issue Publisher
 
-> Stop losing good AI ideas in chat history. Save them to GitHub with one command.
+> Stop losing good AI ideas in chat history.
 >
-> Turn valuable AI conversations into GitHub Issues — with clear ownership and accountability.
+> Turn AI conversations into GitHub Issues with one command.
 
-AI Issue Publisher is a CLI tool that converts AI-generated ideas from ChatGPT, Claude, Cursor, and other AI assistants into GitHub Issues.
+AI Issue Publisher converts AI-generated markdown from ChatGPT, Claude, Cursor, and other assistants into GitHub Issues.
 
-Instead of losing useful suggestions in chat history, you can quickly save them to your project backlog while clearly labeling them as **AI-generated drafts**.
-
-The AI creates the content. The human decides whether it should become work.
-
----
-
-## Why AI Issue Publisher?
-
-AI tools generate a large number of potentially useful ideas:
-
-* Feature suggestions
-* Bug reports
-* Refactoring proposals
-* Product improvements
-* Technical debt items
-
-Most of these ideas disappear in chat history and never reach the project backlog.
-
-AI Issue Publisher bridges that gap by providing a fast workflow for publishing AI-generated content directly to GitHub while preserving clear responsibility boundaries.
-
----
-
-## Core Philosophy
-
-### Author ≠ Publisher
-
-AI Issue Publisher is built around a simple principle:
-
-* AI **authors** the content.
-* Humans **review** the content.
-* Humans **choose** whether to publish it.
-
-Publishing is an explicit decision made by a person.
-
-This distinction helps teams avoid confusion about ownership and ensures AI-generated work is always identifiable.
-
-### Dedicated AI Identity
-
-Issues are created using a dedicated GitHub account.
-
-By default, the CLI uses `ai-backlog-bot`, but you can override it locally with `AI_ISSUE_PUBLISHER`:
-
-```bash
-export AI_ISSUE_PUBLISHER=replworks-bot
-```
-
-This makes it immediately obvious that:
-
-* The issue originated from AI output.
-* A human approved publication.
-* The content should be treated as a draft until reviewed.
-
----
-
-## Features
-
-* 📋 Automatic clipboard reading
-* 📂 Automatic Git repository detection
-* 📝 Smart title extraction from Markdown (`# Heading`)
-* 👀 Preview before publishing
-* ✅ Explicit confirmation step
-* 🤖 Dedicated AI bot account support
-* ⚡ Fast workflow (typically under one minute)
+The AI writes the idea. Humans decide whether it becomes work.
 
 ---
 
 ## Installation
 
-### Option 1: Install via Go
+### Homebrew (Recommended)
+
+```bash
+brew install replworks/tap/ai-issue
+```
+
+### Go
 
 ```bash
 go install github.com/replworks/ai-issue/cmd/ai-issue@latest
 ```
 
-### Option 2: Build from Source
-
-```bash
-git clone https://github.com/replworks/ai-issue.git
-
-cd ai-issue
-
-go mod tidy
-
-go build -o ai-issue ./cmd/ai-issue
-```
-
-Optional global installation:
-
-```bash
-sudo mv ai-issue /usr/local/bin/
-```
-
 Verify installation:
 
 ```bash
-ai-issue --help
 ai-issue diagnose
-```
-
-Expected output:
-
-```text
-✓ Git available
-✓ Git repository detected
-✓ Clipboard available
-✓ GITHUB_TOKEN configured
-✓ Publisher configured
 ```
 
 ---
 
 ## Configuration
 
-### Create a Dedicated Bot Account
-
-Recommended:
-
-1. Create a GitHub account such as `ai-backlog-bot`.
-2. Generate a Fine-grained Personal Access Token (PAT).
-3. Grant repository access.
-4. Configure the token locally.
-5. Set `AI_ISSUE_PUBLISHER` if you publish with a different account name.
-
-### Create a GitHub Personal Access Token
-
-AI Issue Publisher requires a GitHub Fine-grained Personal Access Token.
-
-#### 1. Create a Token
-
-Navigate to:
+Create a GitHub Fine-grained Personal Access Token with:
 
 ```text
-GitHub Settings
-→ Developer settings
-→ Personal access tokens
-→ Fine-grained tokens
-→ Generate new token
+Issues: Read and write
 ```
 
-Configure:
-
-```text
-Resource owner:
-  Your target account or organization
-
-Expiration:
-  Any value except "No expiration"
-
-Repository access:
-  Public repositories
-```
-
-#### 2. Configure Repository Permissions
-
-Grant:
-
-```text
-Issues:
-  Read and write
-```
-
-No additional permissions are required.
-
-#### 3. Approve the Token
-
-If the repository belongs to a GitHub Organization:
-
-```text
-Repository Settings
-→ Personal access tokens
-→ Pending requests
-```
-
-Approve the token request.
-
-Without approval, GitHub will reject issue creation requests.
-
-#### 4. Configure the Token Locally
+Then configure:
 
 ```bash
 export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
 ```
 
-### Set Publisher Identity
-
-If you publish issues from a different bot account, configure the displayed publisher identity locally:
+Optional:
 
 ```bash
 export AI_ISSUE_PUBLISHER=replworks-bot
-```
-
-You can include the `@` prefix if you prefer:
-
-```bash
-export AI_ISSUE_PUBLISHER=@replworks-bot
-```
-
-### Set GitHub Token
-
-```bash
-export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
-```
-
-For persistence:
-
-**Zsh**
-
-```bash
-echo 'export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx' >> ~/.zshrc
-```
-
-**Bash**
-
-```bash
-echo 'export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx' >> ~/.bashrc
 ```
 
 ---
 
 ## Usage
 
-### Typical Workflow
-
-1. Copy an AI response to your clipboard.
-2. Navigate to your Git repository.
-3. Run:
+Copy AI-generated markdown to your clipboard and run:
 
 ```bash
 ai-issue
 ```
 
-1. Review the generated preview.
-2. Confirm publication.
-
-That's it.
-
----
-
-## Commands
+Preview only:
 
 ```bash
-ai-issue
+ai-issue --dry-run
 ```
 
-Publish the markdown from your clipboard as a new GitHub Issue.
+Diagnostics:
 
 ```bash
 ai-issue diagnose
 ```
-
-Check Git availability, repository resolution, publisher validation, clipboard availability, token configuration, and repository access.
-
-```bash
-ai-issue --help
-```
-
-Display command help.
 
 ---
 
@@ -282,34 +92,50 @@ Acceptance Criteria
 - Add tests
 ```
 
-### Command
+### Publish
 
 ```bash
 ai-issue
-```
-
-### Preview
-
-```text
-Repository: yourname/project
-
-Title: Add timestamps to logging system
-Publisher: @ai-backlog-bot
-
-Body preview:
-Current logs do not contain timestamps, making debugging difficult.
-
-**Publisher:** @ai-backlog-bot
-
-Create Issue? (Y/n):
 ```
 
 ### Result
 
 ```text
 ✅ Issue created successfully!
-https://github.com/yourname/project/issues/42
+https://github.com/owner/repository/issues/42
 ```
+
+---
+
+## Core Philosophy
+
+### Author ≠ Publisher
+
+AI Issue Publisher is built around a simple principle:
+
+- AI authors the content.
+- Humans review the content.
+- Humans decide whether to publish it.
+
+Publishing is always an explicit human decision.
+
+### Dedicated AI Identity
+
+Issues are created under a dedicated AI identity.
+
+By default:
+
+```text
+@ai-backlog-bot
+```
+
+Override locally:
+
+```bash
+export AI_ISSUE_PUBLISHER=replworks-bot
+```
+
+This makes AI-generated issues immediately identifiable while preserving human accountability.
 
 ---
 
@@ -317,132 +143,62 @@ https://github.com/yourname/project/issues/42
 
 ### GITHUB_TOKEN is required
 
-Configure the environment variable:
-
 ```bash
-export GITHUB_TOKEN=...
-```
-
-### Publisher identity is configurable
-
-If you publish from a different bot account, set:
-
-```bash
-export AI_ISSUE_PUBLISHER=your-bot-name
+export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
 ```
 
 ### Repository could not be determined
 
 Run the command inside a Git repository.
 
-### Permission denied
-
-Verify that the bot account has access to the target repository.
-
 ### Clipboard is empty
 
-Copy the AI-generated content before running the command.
-
-### Need more details?
-
-Run:
-
-```bash
-ai-issue diagnose
-```
+Copy AI-generated markdown before running the command.
 
 ### Resource not accessible by personal access token
 
-If you receive:
-
-```text
-GitHub issue publication failed
-Repository: owner/repository
-Status: 403 Forbidden
-Resource not accessible by personal access token
-```
-
 Verify:
 
-* The token is a Fine-grained Personal Access Token.
-* The token has `Issues: Read and write` permission.
-* The token has access to the target repository.
-* The token has been approved by the organization (if applicable).
-* The token expiration is less than or equal to 366 days.
+- Fine-grained PAT is being used
+- `Issues: Read and write` permission is granted
+- Repository access is granted
+- Organization approval is completed (if required)
+- Token expiration is 366 days or less
 
-Some GitHub organizations reject Fine-grained PATs that have no expiration date.
+### Need more details?
 
----
-
-## Project Structure
-
-```text
-ai-issue/
-├── cmd/
-│   └── ai-issue/
-├── internal/
-│   ├── adapter/
-│   ├── cli/
-│   ├── compliance/
-│   ├── construction/
-│   ├── domain/
-│   ├── extraction/
-│   ├── preview/
-│   ├── publisher/
-│   └── repository/
-├── .goreleaser.yml
-├── ARCHITECTURE.md
-├── FRAMEWORK.md
-├── LICENSE
-├── PRODUCT_SPEC.md
-├── README.md
-└── TASKS.md
+```bash
+ai-issue diagnose
 ```
 
 ---
 
 ## Development
 
-### Run Tests
+Run tests:
 
 ```bash
 go test ./...
 ```
 
-### Release
-
-This project uses GoReleaser for GitHub Releases.
-
-Install:
+Build:
 
 ```bash
-go install github.com/goreleaser/goreleaser@latest
+make build
 ```
 
-Snapshot release:
+Release:
 
 ```bash
-goreleaser release --snapshot --clean
+goreleaser release --clean
 ```
-
-Production release:
-
-```bash
-goreleaser release
-```
-
-### Supported Platforms
-
-* macOS (arm64, amd64)
-* Linux (arm64, amd64)
-* Windows (amd64)
 
 ---
 
 ## License
 
-MIT License
+MIT
 
 ---
 
-Built for AI-native developers who believe that AI can generate ideas, but humans remain responsible for deciding what gets shipped.
+Built for developers who use AI every day and want good ideas to reach the backlog.
