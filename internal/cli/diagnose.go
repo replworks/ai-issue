@@ -13,8 +13,9 @@ import (
 )
 
 var diagnoseCmd = &cobra.Command{
-	Use:   "diagnose",
-	Short: "Check prerequisites for publishing",
+	Use:          "diagnose",
+	Short:        "Check prerequisites for publishing",
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("=== AI Issue Publisher Diagnostics ===")
 		failed := false
