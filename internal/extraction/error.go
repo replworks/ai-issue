@@ -1,7 +1,5 @@
 package extraction
 
-import "fmt"
-
 type AppError struct {
 	Kind    string
 	Message string
