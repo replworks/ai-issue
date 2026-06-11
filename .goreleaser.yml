@@ -34,6 +34,21 @@ archives:
       - ARCHITECTURE.md
       - FRAMEWORK.md
 
+brews:
+  - name: ai-issue
+    repository:
+      owner: replworks
+      name: homebrew-tap
+
+    homepage: "https://github.com/replworks/ai-issue"
+
+    description: "A CLI tool to publish AI-generated ideas as GitHub Issues, clearly separating AI authorship from human responsibility."
+
+    license: "MIT"
+
+    install: |
+      bin.install "ai-issue"
+
 checksum:
   name_template: "checksums.txt"
 
