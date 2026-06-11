@@ -9,12 +9,12 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
+	"ai-issue/internal/adapter/github"
 	"ai-issue/internal/construction"
 	"ai-issue/internal/extraction"
 	"ai-issue/internal/preview"
 	"ai-issue/internal/publisher"
 	"ai-issue/internal/repository"
-	"ai-issue/internal/adapter/github"
 )
 
 var publishCmd = &cobra.Command{

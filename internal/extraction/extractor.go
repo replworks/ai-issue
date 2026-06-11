@@ -32,7 +32,7 @@ func extractTitleAndBody(md string) (string, string) {
 	title := ""
 	body := md
 
-	ast.Walk(doc, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
+	_ = ast.Walk(doc, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering || title != "" {
 			return ast.WalkContinue, nil
 		}
