@@ -63,7 +63,9 @@ func (c *Client) CreateIssue(repo, title, body string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to publish GitHub issue: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusCreated {
 		return "", fmt.Errorf("GitHub issue publication failed: %s", resp.Status)

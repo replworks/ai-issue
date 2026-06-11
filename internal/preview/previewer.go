@@ -8,8 +8,8 @@ import (
 func FormatPreview(repo, title, body string) string {
 	var b strings.Builder
 	b.WriteString("\n=== AI Issue Preview ===\n")
-	b.WriteString(fmt.Sprintf("Repository: %s\n", repo))
-	b.WriteString(fmt.Sprintf("Title: %s\n", title))
+	fmt.Fprintf(&b, "Repository: %s\n", repo)
+	fmt.Fprintf(&b, "Title: %s\n", title)
 	b.WriteString("\nBody preview:\n")
 	if len(body) > 300 {
 		b.WriteString(body[:300] + "...\n")
