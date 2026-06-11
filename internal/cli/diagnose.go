@@ -13,8 +13,9 @@ import (
 )
 
 var diagnoseCmd = &cobra.Command{
-	Use:   "diagnose",
-	Short: "Check prerequisites for publishing",
+	Use:          "diagnose",
+	Short:        "Check prerequisites for publishing",
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("=== AI Issue Publisher Diagnostics ===")
 		failed := false
@@ -29,7 +30,8 @@ var diagnoseCmd = &cobra.Command{
 
 		// Repository check
 		var repo string
-		if repo, err := repository.ResolveRepository(); err == nil {
+		if resolvedRepo, err := repository.ResolveRepository(); err == nil {
+			repo = resolvedRepo
 			fmt.Printf("✅ Repository validation: %s\n", repo)
 		} else {
 			fmt.Printf("❌ Repository validation: %v\n", err)
