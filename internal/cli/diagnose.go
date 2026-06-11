@@ -29,7 +29,8 @@ var diagnoseCmd = &cobra.Command{
 
 		// Repository check
 		var repo string
-		if repo, err := repository.ResolveRepository(); err == nil {
+		if resolvedRepo, err := repository.ResolveRepository(); err == nil {
+			repo = resolvedRepo
 			fmt.Printf("✅ Repository validation: %s\n", repo)
 		} else {
 			fmt.Printf("❌ Repository validation: %v\n", err)
