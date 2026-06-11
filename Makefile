@@ -13,3 +13,6 @@ vet:
 	go vet ./...
 
 check: fmt-check vet test
+
+build:
+	go build -o ai-issue ./cmd/ai-issue

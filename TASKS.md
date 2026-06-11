@@ -140,6 +140,7 @@ Acceptance Criteria:
 ### Additional Functions
 
 * [x] Implement GitHub repository access validation in the `diagnose` command.
+* [x] Add `--version` Support #19.
 
 ---
 
