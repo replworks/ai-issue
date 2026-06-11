@@ -55,8 +55,8 @@ func runPublish() error {
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(strings.ToLower(input))
 
-	if input != "y" && input != "" {
-		fmt.Println("Publication cancelled.")
+	if input != "y" && input != "" && input != "yes" {
+		fmt.Println("Publication cancelled by user.")
 		return nil
 	}
 
