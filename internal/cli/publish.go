@@ -61,6 +61,10 @@ func runPublish() error {
 	}
 
 	// 4. Preview
+	if dryRun {
+		preview.ShowDryRunPreview(repo, publishable.Title, publishable.Body, publisherName)
+		return nil
+	}
 	preview.ShowPreview(repo, publishable.Title, publishable.Body, publisherName)
 
 	// 5. Confirm

@@ -143,6 +143,7 @@ Acceptance Criteria:
 * [x] Add `--version` Support #19.
 * [x] Fix Title Extraction for Inline Code in Markdown Headings.
 * [x] Make Publisher Identity Configurable.
+* [x] Add `--dry-run` Mode.
 
 ---
 

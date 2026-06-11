@@ -7,6 +7,7 @@ import (
 )
 
 var appVersion = "dev"
+var dryRun bool
 
 var rootCmd = &cobra.Command{
 	Use:           "ai-issue",
@@ -36,6 +37,7 @@ func SetVersion(version string) {
 func init() {
 	rootCmd.Version = appVersion
 	rootCmd.SetVersionTemplate("{{.Name}} {{.Version}}\n")
+	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Display the issue preview without creating a GitHub Issue")
 	rootCmd.AddCommand(publishCmd)
 	rootCmd.AddCommand(diagnoseCmd)
 }

@@ -72,6 +72,10 @@ func appendHeadingText(buf *strings.Builder, node ast.Node, source []byte) {
 			buf.WriteString(string(n.Segment.Value(source)))
 		case *ast.String:
 			buf.Write(n.Value)
+		case *ast.CodeSpan:
+			buf.WriteString("`")
+			appendHeadingText(buf, n, source)
+			buf.WriteString("`")
 		default:
 			appendHeadingText(buf, c, source)
 		}

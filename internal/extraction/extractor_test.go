@@ -27,14 +27,14 @@ func TestExtractIssue(t *testing.T) {
 		{
 			name:      "with inline code title",
 			content:   "# Add `--version` Support\n\nBody text.",
-			wantTitle: "Add --version Support",
+			wantTitle: "Add `--version` Support",
 			wantBody:  "Body text.",
 			wantErr:   false,
 		},
 		{
 			name:      "with multiple inline code segments",
 			content:   "# Fix `go install` and `diagnose`\n\nBody text.",
-			wantTitle: "Fix go install and diagnose",
+			wantTitle: "Fix `go install` and `diagnose`",
 			wantBody:  "Body text.",
 			wantErr:   false,
 		},
