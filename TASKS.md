@@ -81,7 +81,7 @@ Acceptance Criteria:
 
 * [X] Create GitHub Issue
 * [X] Return issue URL
-* [ ] Handle publication failures
+* [X] Handle publication failures
 
 Acceptance Criteria:
 
@@ -118,7 +118,7 @@ Acceptance Criteria:
 ### Testing
 
 * [X] Unit tests
-* [ ] End-to-end publication flow test
+* [X] End-to-end publication flow test
 * [ ] Architecture compliance validation
 * [ ] Manual MVP flow validation
 
