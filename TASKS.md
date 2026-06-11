@@ -137,6 +137,10 @@ Acceptance Criteria:
 
 * End users can install and execute the application
 
+### Additional Functions
+
+* [x] Implement GitHub repository access validation in the `diagnose` command.
+
 ---
 
 ## Future
