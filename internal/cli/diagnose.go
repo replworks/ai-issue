@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
+	"github.com/replworks/ai-issue/internal/config"
 	"github.com/replworks/ai-issue/internal/publisher"
 	"github.com/replworks/ai-issue/internal/repository"
 )
@@ -39,8 +41,9 @@ var diagnoseCmd = &cobra.Command{
 		}
 
 		// Publisher check
-		if err := publisher.ValidatePublisher("ai-backlog-bot"); err == nil {
-			fmt.Println("✅ Publisher validation: ai-backlog-bot")
+		publisherName := config.PublisherIdentity()
+		if err := publisher.ValidatePublisher(publisherName); err == nil {
+			fmt.Printf("✅ Publisher validation: @%s\n", strings.TrimPrefix(publisherName, "@"))
 		} else {
 			fmt.Printf("❌ Publisher validation: %v\n", err)
 			failed = true

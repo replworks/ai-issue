@@ -11,6 +11,7 @@ import (
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
 	"github.com/replworks/ai-issue/internal/construction"
+	"github.com/replworks/ai-issue/internal/config"
 	"github.com/replworks/ai-issue/internal/extraction"
 	"github.com/replworks/ai-issue/internal/preview"
 	"github.com/replworks/ai-issue/internal/publisher"
@@ -53,14 +54,14 @@ func runPublish() error {
 		return err
 	}
 
-	const publisherName = "ai-backlog-bot"
+	publisherName := config.PublisherIdentity()
 	publishable, err := construction.BuildPublishableIssue(draft, repo, publisherName)
 	if err != nil {
 		return err
 	}
 
 	// 4. Preview
-	preview.ShowPreview(repo, publishable.Title, publishable.Body)
+	preview.ShowPreview(repo, publishable.Title, publishable.Body, publisherName)
 
 	// 5. Confirm
 	reader := bufio.NewReader(os.Stdin)

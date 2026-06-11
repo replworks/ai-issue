@@ -7,11 +7,12 @@ import (
 )
 
 func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherName string) (*domain.PublishableIssue, error) {
+	publisherName = strings.TrimSpace(strings.TrimPrefix(publisherName, "@"))
 	issue := &domain.PublishableIssue{
 		Title:      "",
 		Body:       "",
 		Repository: strings.TrimSpace(repositoryName),
-		Publisher:  strings.TrimSpace(publisherName),
+		Publisher:  publisherName,
 	}
 
 	if draft != nil {
@@ -19,8 +20,8 @@ func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherNa
 		issue.Body = strings.TrimSpace(draft.Body)
 	}
 
-	if strings.TrimSpace(publisherName) != "" {
-		issue.Body = strings.TrimSpace(issue.Body + "\n\n**Publisher:** @" + strings.TrimSpace(publisherName))
+	if publisherName != "" {
+		issue.Body = strings.TrimSpace(issue.Body + "\n\n**Publisher:** @" + publisherName)
 	}
 
 	if err := ValidatePublishableIssue(issue); err != nil {

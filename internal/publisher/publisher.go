@@ -37,7 +37,7 @@ func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
 }
 
 func ValidatePublisher(username string) error {
-	if strings.TrimSpace(username) == "" {
+	if strings.TrimSpace(strings.TrimPrefix(username, "@")) == "" {
 		return fmt.Errorf("publisher information is required")
 	}
 	return nil
