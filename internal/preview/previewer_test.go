@@ -1,21 +1,12 @@
 package preview
 
 import (
+	"strings"
 	"testing"
 )
 
 func TestFormatPreview(t *testing.T) {
-	draft := &struct {
-		Title      string
-		Body       string
-		Repository string
-	}{
-		Title:      "Test Issue",
-		Body:       "This is a test body.",
-		Repository: "user/repo",
-	}
-
-	preview := FormatPreview(draft)
+	preview := FormatPreview("user/repo", "Test Issue", "This is a test body.")
 
 	if preview == "" {
 		t.Error("FormatPreview returned empty string")
@@ -27,5 +18,5 @@ func TestFormatPreview(t *testing.T) {
 }
 
 func contains(s, substr string) bool {
-	return len(s) > 0 && len(substr) > 0
+	return strings.Contains(s, substr)
 }

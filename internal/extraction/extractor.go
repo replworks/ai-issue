@@ -1,13 +1,12 @@
 package extraction
 
 import (
-	"bytes"
 	"strings"
 
+	"ai-issue/internal/domain"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/parser"
-	"ai-issue/internal/domain"
+	"github.com/yuin/goldmark/text"
 )
 
 func ExtractIssue(content string) (*domain.IssueDraft, error) {
@@ -15,8 +14,10 @@ func ExtractIssue(content string) (*domain.IssueDraft, error) {
 		return nil, ErrEmptyContent
 	}
 
-	// Simple title extraction from first # heading
 	title, body := extractTitleAndBody(content)
+	if strings.TrimSpace(title) == "" {
+		return nil, NewError("draft", "Issue title could not be determined.")
+	}
 
 	return &domain.IssueDraft{
 		Title: title,
@@ -25,21 +26,48 @@ func ExtractIssue(content string) (*domain.IssueDraft, error) {
 }
 
 func extractTitleAndBody(md string) (string, string) {
-	lines := strings.Split(md, "\n")
-	title := "Untitled AI Issue"
-	bodyStart := 0
+	source := text.NewReader([]byte(md))
+	doc := goldmark.DefaultParser().Parse(source)
 
-	for i, line := range lines {
-		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "# ") {
-			title = strings.TrimPrefix(line, "# ")
-			bodyStart = i + 1
-			break
+	title := ""
+	body := md
+
+	ast.Walk(doc, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering || title != "" {
+			return ast.WalkContinue, nil
 		}
+		heading, ok := node.(*ast.Heading)
+		if !ok || heading.Level != 1 {
+			return ast.WalkContinue, nil
+		}
+
+		var buf strings.Builder
+		for c := heading.FirstChild(); c != nil; c = c.NextSibling() {
+			if textNode, ok := c.(*ast.Text); ok {
+				buf.WriteString(string(textNode.Segment.Value(source.Source())))
+			}
+		}
+		title = strings.TrimSpace(buf.String())
+		if title == "" {
+			title = "Untitled AI Issue"
+		}
+
+		lines := strings.Split(md, "\n")
+		for i, line := range lines {
+			if strings.TrimSpace(line) == strings.TrimSpace("# "+title) {
+				body = strings.TrimSpace(strings.Join(lines[i+1:], "\n"))
+				break
+			}
+		}
+		return ast.WalkStop, nil
+	})
+
+	if title == "" {
+		title = "Untitled AI Issue"
+		body = strings.TrimSpace(md)
 	}
 
-	body := strings.Join(lines[bodyStart:], "\n")
-	return title, strings.TrimSpace(body)
+	return title, body
 }
 
 var ErrEmptyContent = NewError("content", "Clipboard is empty. Copy AI response first.")

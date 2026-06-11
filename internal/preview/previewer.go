@@ -2,18 +2,25 @@ package preview
 
 import (
 	"fmt"
+	"strings"
 )
 
-func ShowPreview(repo, title, body string) {
-	fmt.Println("\n=== AI Issue Preview ===")
-	fmt.Printf("Repository: %s\n", repo)
-	fmt.Printf("Title: %s\n", title)
-	fmt.Println("\nBody preview:")
+func FormatPreview(repo, title, body string) string {
+	var b strings.Builder
+	b.WriteString("\n=== AI Issue Preview ===\n")
+	b.WriteString(fmt.Sprintf("Repository: %s\n", repo))
+	b.WriteString(fmt.Sprintf("Title: %s\n", title))
+	b.WriteString("\nBody preview:\n")
 	if len(body) > 300 {
-		fmt.Println(body[:300] + "...")
+		b.WriteString(body[:300] + "...\n")
 	} else {
-		fmt.Println(body)
+		b.WriteString(body + "\n")
 	}
-	fmt.Println("\nThis issue will be created by ai-backlog-bot account.")
-	fmt.Print("\nCreate Issue? (Y/n): ")
+	b.WriteString("\nThis issue will be created by ai-backlog-bot account.\n")
+	b.WriteString("\nCreate Issue? (Y/n): ")
+	return b.String()
+}
+
+func ShowPreview(repo, title, body string) {
+	fmt.Print(FormatPreview(repo, title, body))
 }

@@ -21,13 +21,27 @@ func ResolveRepository() (string, error) {
 }
 
 func extractRepoName(url string) string {
-	// Very basic extraction for MVP
-	if idx := strings.LastIndex(url, ":"); idx != -1 {
-		repo := url[idx+1:]
-		repo = strings.TrimSuffix(repo, ".git")
-		return repo
+	repo := strings.TrimSpace(url)
+	repo = strings.TrimSuffix(repo, ".git")
+
+	if strings.HasPrefix(repo, "git@") {
+		if idx := strings.Index(repo, ":"); idx != -1 {
+			return repo[idx+1:]
+		}
 	}
-	return url
+
+	if strings.HasPrefix(repo, "https://") || strings.HasPrefix(repo, "http://") {
+		parts := strings.Split(repo, "/")
+		if len(parts) >= 2 {
+			return strings.Join(parts[len(parts)-2:], "/")
+		}
+	}
+
+	if idx := strings.LastIndex(repo, ":"); idx != -1 {
+		return repo[idx+1:]
+	}
+
+	return repo
 }
 
 func NewError(kind, msg string) error {
