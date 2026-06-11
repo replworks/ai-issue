@@ -7,7 +7,7 @@
 * [X] Initialize project
 * [X] Create CLI entrypoint
 * [X] Establish project structure
-* [ ] Verify framework compliance
+* [X] Verify framework compliance
 
 ---
 
@@ -119,7 +119,7 @@ Acceptance Criteria:
 
 * [X] Unit tests
 * [X] End-to-end publication flow test
-* [ ] Architecture compliance validation
+* [X] Architecture compliance validation
 * [ ] Manual MVP flow validation
 
 Acceptance Criteria:
