@@ -17,7 +17,7 @@
 * [X] Validate content exists
 * [X] Extract issue title
 * [X] Extract issue body
-* [ ] Validate extracted issue draft
+* [X] Validate extracted issue draft
 
 Acceptance Criteria:
 
@@ -30,7 +30,7 @@ Acceptance Criteria:
 ### Repository Resolution
 
 * [X] Determine target repository
-* [ ] Validate resolved repository
+* [X] Validate resolved repository
 
 Acceptance Criteria:
 
@@ -42,7 +42,7 @@ Acceptance Criteria:
 ### Publisher Resolution
 
 * [X] Determine publishing user
-* [ ] Validate resolved publisher
+* [X] Validate resolved publisher
 
 Acceptance Criteria:
 
@@ -93,7 +93,7 @@ Acceptance Criteria:
 ### Diagnostics
 
 * [X] Validate publishing prerequisites
-* [ ] Report diagnostic results
+* [X] Report diagnostic results
 
 Acceptance Criteria:
 
@@ -104,7 +104,7 @@ Acceptance Criteria:
 ### Error Handling
 
 * [X] Handle missing content
-* [ ] Handle invalid extracted issue drafts
+* [X] Handle invalid extracted issue drafts
 * [X] Handle repository failures
 * [X] Handle authentication failures
 * [X] Handle publication failures

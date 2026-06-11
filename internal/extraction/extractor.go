@@ -15,14 +15,14 @@ func ExtractIssue(content string) (*domain.IssueDraft, error) {
 	}
 
 	title, body := extractTitleAndBody(content)
-	if strings.TrimSpace(title) == "" {
-		return nil, NewError("draft", "Issue title could not be determined.")
-	}
-
-	return &domain.IssueDraft{
+	draft := &domain.IssueDraft{
 		Title: title,
 		Body:  body,
-	}, nil
+	}
+	if err := ValidateIssueDraft(draft); err != nil {
+		return nil, err
+	}
+	return draft, nil
 }
 
 func extractTitleAndBody(md string) (string, string) {
@@ -63,7 +63,6 @@ func extractTitleAndBody(md string) (string, string) {
 	})
 
 	if title == "" {
-		title = "Untitled AI Issue"
 		body = strings.TrimSpace(md)
 	}
 
@@ -71,3 +70,16 @@ func extractTitleAndBody(md string) (string, string) {
 }
 
 var ErrEmptyContent = NewError("content", "Clipboard is empty. Copy AI response first.")
+
+func ValidateIssueDraft(draft *domain.IssueDraft) error {
+	if draft == nil {
+		return NewError("draft", "Issue draft could not be created.")
+	}
+	if strings.TrimSpace(draft.Title) == "" {
+		return NewError("draft", "Issue title could not be determined.")
+	}
+	if strings.TrimSpace(draft.Body) == "" {
+		return NewError("draft", "Issue body could not be determined.")
+	}
+	return nil
+}
