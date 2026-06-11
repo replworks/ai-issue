@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/replworks/ai-issue/internal/extraction"
 )
@@ -67,8 +69,18 @@ func (c *Client) CreateIssue(repo, title, body string) (string, error) {
 		_ = resp.Body.Close()
 	}()
 
+	responseBody, _ := io.ReadAll(resp.Body)
+
 	if resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("GitHub issue publication failed: %s", resp.Status)
+		return "", fmt.Errorf(
+			"GitHub issue publication failed\n"+
+				"Repository: %s\n"+
+				"Status: %s\n"+
+				"%s",
+			repo,
+			resp.Status,
+			strings.TrimSpace(string(responseBody)),
+		)
 	}
 
 	// In real implementation, parse response for HTML URL

@@ -99,6 +99,16 @@ ai-issue --help
 ai-issue diagnose
 ```
 
+Expected output:
+
+```text
+✓ Git available
+✓ Git repository detected
+✓ Clipboard available
+✓ GITHUB_TOKEN configured
+✓ Publisher configured
+```
+
 ---
 
 ## Configuration
@@ -108,14 +118,74 @@ ai-issue diagnose
 Recommended:
 
 1. Create a GitHub account such as `ai-backlog-bot`.
-2. Generate a Personal Access Token (PAT).
+2. Generate a Fine-grained Personal Access Token (PAT).
 3. Grant repository access.
 4. Configure the token locally.
+
+### Create a GitHub Personal Access Token
+
+AI Issue Publisher requires a GitHub Fine-grained Personal Access Token.
+
+#### 1. Create a Token
+
+Navigate to:
+
+```text
+GitHub Settings
+→ Developer settings
+→ Personal access tokens
+→ Fine-grained tokens
+→ Generate new token
+```
+
+Configure:
+
+```text
+Resource owner:
+  Your target account or organization
+
+Expiration:
+  Any value except "No expiration"
+
+Repository access:
+  Public repositories
+```
+
+#### 2. Configure Repository Permissions
+
+Grant:
+
+```text
+Issues:
+  Read and write
+```
+
+No additional permissions are required.
+
+#### 3. Approve the Token
+
+If the repository belongs to a GitHub Organization:
+
+```text
+Repository Settings
+→ Personal access tokens
+→ Pending requests
+```
+
+Approve the token request.
+
+Without approval, GitHub will reject issue creation requests.
+
+#### 4. Configure the Token Locally
+
+```bash
+export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
+```
 
 ### Set GitHub Token
 
 ```bash
-export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
 ```
 
 For persistence:
@@ -123,13 +193,13 @@ For persistence:
 **Zsh**
 
 ```bash
-echo 'export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' >> ~/.zshrc
+echo 'export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx' >> ~/.zshrc
 ```
 
 **Bash**
 
 ```bash
-echo 'export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' >> ~/.bashrc
+echo 'export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx' >> ~/.bashrc
 ```
 
 ---
@@ -252,6 +322,27 @@ Run:
 ```bash
 ai-issue diagnose
 ```
+
+### Resource not accessible by personal access token
+
+If you receive:
+
+```text
+GitHub issue publication failed
+Repository: owner/repository
+Status: 403 Forbidden
+Resource not accessible by personal access token
+```
+
+Verify:
+
+* The token is a Fine-grained Personal Access Token.
+* The token has `Issues: Read and write` permission.
+* The token has access to the target repository.
+* The token has been approved by the organization (if applicable).
+* The token expiration is less than or equal to 366 days.
+
+Some GitHub organizations reject Fine-grained PATs that have no expiration date.
 
 ---
 
