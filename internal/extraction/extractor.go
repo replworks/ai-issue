@@ -42,11 +42,7 @@ func extractTitleAndBody(md string) (string, string) {
 		}
 
 		var buf strings.Builder
-		for c := heading.FirstChild(); c != nil; c = c.NextSibling() {
-			if textNode, ok := c.(*ast.Text); ok {
-				buf.WriteString(string(textNode.Segment.Value(source.Source())))
-			}
-		}
+		appendHeadingText(&buf, heading, source.Source())
 		title = strings.TrimSpace(buf.String())
 		if title == "" {
 			title = "Untitled AI Issue"
@@ -54,7 +50,7 @@ func extractTitleAndBody(md string) (string, string) {
 
 		lines := strings.Split(md, "\n")
 		for i, line := range lines {
-			if strings.TrimSpace(line) == strings.TrimSpace("# "+title) {
+			if strings.HasPrefix(strings.TrimSpace(line), "#") {
 				body = strings.TrimSpace(strings.Join(lines[i+1:], "\n"))
 				break
 			}
@@ -67,6 +63,19 @@ func extractTitleAndBody(md string) (string, string) {
 	}
 
 	return title, body
+}
+
+func appendHeadingText(buf *strings.Builder, node ast.Node, source []byte) {
+	for c := node.FirstChild(); c != nil; c = c.NextSibling() {
+		switch n := c.(type) {
+		case *ast.Text:
+			buf.WriteString(string(n.Segment.Value(source)))
+		case *ast.String:
+			buf.Write(n.Value)
+		default:
+			appendHeadingText(buf, c, source)
+		}
+	}
 }
 
 var ErrEmptyContent = NewError("content", "Clipboard is empty. Copy AI response first.")
