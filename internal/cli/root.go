@@ -1,8 +1,12 @@
 package cli
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 )
+
+var appVersion = "dev"
 
 var rootCmd = &cobra.Command{
 	Use:           "ai-issue",
@@ -19,7 +23,19 @@ func Execute() error {
 	return rootCmd.Execute()
 }
 
+func SetVersion(version string) {
+	version = strings.TrimSpace(version)
+	if version == "" {
+		version = "dev"
+	}
+
+	appVersion = version
+	rootCmd.Version = appVersion
+}
+
 func init() {
+	rootCmd.Version = appVersion
+	rootCmd.SetVersionTemplate("{{.Name}} {{.Version}}\n")
 	rootCmd.AddCommand(publishCmd)
 	rootCmd.AddCommand(diagnoseCmd)
 }

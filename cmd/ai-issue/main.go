@@ -13,7 +13,8 @@ var (
 )
 
 func main() {
-	_, _, _ = version, commit, date
+	_, _ = commit, date
+	cli.SetVersion(version)
 	if err := cli.Execute(); err != nil {
 		os.Exit(1)
 	}
