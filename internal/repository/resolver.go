@@ -21,22 +21,12 @@ func ResolveRepository() (string, error) {
 }
 
 func extractRepoName(url string) string {
-	url = strings.TrimSpace(url)
-	url = strings.TrimSuffix(url, ".git")
-
-	// HTTPS
-	if strings.Contains(url, "github.com/") {
-		parts := strings.Split(url, "github.com/")
-		if len(parts) > 1 {
-			return parts[len(parts)-1]
-		}
-	}
-
-	// SSH
+	// Very basic extraction for MVP
 	if idx := strings.LastIndex(url, ":"); idx != -1 {
-		return url[idx+1:]
+		repo := url[idx+1:]
+		repo = strings.TrimSuffix(repo, ".git")
+		return repo
 	}
-
 	return url
 }
 
