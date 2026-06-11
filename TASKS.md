@@ -141,6 +141,7 @@ Acceptance Criteria:
 
 * [x] Implement GitHub repository access validation in the `diagnose` command.
 * [x] Add `--version` Support #19.
+* [x] Fix Title Extraction for Inline Code in Markdown Headings.
 
 ---
 
