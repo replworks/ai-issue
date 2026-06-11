@@ -16,7 +16,7 @@ var diagnoseCmd = &cobra.Command{
 	Short: "Check prerequisites for publishing",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("=== AI Issue Publisher Diagnostics ===")
-		
+
 		// Git check
 		if _, err := exec.LookPath("git"); err == nil {
 			fmt.Println("✅ Git: OK")

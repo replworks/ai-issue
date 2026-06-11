@@ -6,11 +6,11 @@ import (
 
 func TestExtractIssue(t *testing.T) {
 	tests := []struct {
-		name     string
-		content  string
+		name      string
+		content   string
 		wantTitle string
 		wantBody  string
-		wantErr  bool
+		wantErr   bool
 	}{
 		{
 			name:    "empty content",
@@ -18,8 +18,8 @@ func TestExtractIssue(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:    "with title",
-			content: "# Add timestamps to logging\n\nCurrent logs do not contain timestamps.",
+			name:      "with title",
+			content:   "# Add timestamps to logging\n\nCurrent logs do not contain timestamps.",
 			wantTitle: "Add timestamps to logging",
 			wantBody:  "Current logs do not contain timestamps.",
 			wantErr:   false,
@@ -27,7 +27,7 @@ func TestExtractIssue(t *testing.T) {
 		{
 			name:    "no title",
 			content: "Just some content without heading.",
-			wantErr:  true,
+			wantErr: true,
 		},
 	}
 

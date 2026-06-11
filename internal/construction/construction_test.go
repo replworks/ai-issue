@@ -71,8 +71,8 @@ func TestValidatePublishableIssue(t *testing.T) {
 		{
 			name: "missing repository",
 			issue: &domain.PublishableIssue{
-				Title: "Issue",
-				Body:  "Body",
+				Title:     "Issue",
+				Body:      "Body",
 				Publisher: "ai-backlog-bot",
 			},
 			wantErr: true,
