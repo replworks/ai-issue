@@ -9,7 +9,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
-	"ai-issue/internal/domain"
+	"ai-issue/internal/construction"
 	"ai-issue/internal/extraction"
 	"ai-issue/internal/preview"
 	"ai-issue/internal/publisher"
@@ -53,8 +53,14 @@ func runPublish() error {
 		return err
 	}
 
+	const publisherName = "ai-backlog-bot"
+	publishable, err := construction.BuildPublishableIssue(draft, repo, publisherName)
+	if err != nil {
+		return err
+	}
+
 	// 4. Preview
-	preview.ShowPreview(repo, draft.Title, draft.Body)
+	preview.ShowPreview(repo, publishable.Title, publishable.Body)
 
 	// 5. Confirm
 	reader := bufio.NewReader(os.Stdin)
@@ -72,15 +78,9 @@ func runPublish() error {
 		return err
 	}
 
-	pubService := publisher.NewService(ghClient, "ai-backlog-bot")
-	if err := publisher.ValidatePublisher("ai-backlog-bot"); err != nil {
+	pubService := publisher.NewService(ghClient, publisherName)
+	if err := publisher.ValidatePublisher(publisherName); err != nil {
 		return err
-	}
-
-	publishable := &domain.PublishableIssue{
-		Title:      draft.Title,
-		Body:       draft.Body,
-		Repository: repo,
 	}
 
 	url, err := pubService.Publish(publishable)

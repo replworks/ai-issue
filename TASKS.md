@@ -53,8 +53,8 @@ Acceptance Criteria:
 ### Issue Construction
 
 * [X] Construct publishable issue
-* [ ] Preserve publisher traceability
-* [ ] Validate final publishable issue payload
+* [X] Preserve publisher traceability
+* [X] Validate final publishable issue payload
 
 Acceptance Criteria:
 
