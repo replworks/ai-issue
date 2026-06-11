@@ -120,7 +120,7 @@ Acceptance Criteria:
 * [X] Unit tests
 * [X] End-to-end publication flow test
 * [X] Architecture compliance validation
-* [ ] Manual MVP flow validation
+* [X] Manual MVP flow validation
 
 Acceptance Criteria:
 
@@ -130,7 +130,7 @@ Acceptance Criteria:
 
 ### Release
 
-* [ ] Prepare release artifacts
+* [X] Prepare release artifacts
 * [ ] Publish v0.1.0
 
 Acceptance Criteria:
