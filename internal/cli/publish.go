@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
-	"github.com/replworks/ai-issue/internal/construction"
 	"github.com/replworks/ai-issue/internal/config"
+	"github.com/replworks/ai-issue/internal/construction"
 	"github.com/replworks/ai-issue/internal/extraction"
 	"github.com/replworks/ai-issue/internal/preview"
 	"github.com/replworks/ai-issue/internal/publisher"

@@ -1,3 +1,6 @@
+fmt: ## runs go formatter
+	go fmt ./...
+
 fmt-check:
 	@files=$$(gofmt -l .); \
 	if [ -n "$$files" ]; then \
