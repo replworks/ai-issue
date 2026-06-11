@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"ai-issue/internal/publisher"
-	"ai-issue/internal/repository"
+	"github.com/replworks/ai-issue/internal/publisher"
+	"github.com/replworks/ai-issue/internal/repository"
 )
 
 var diagnoseCmd = &cobra.Command{

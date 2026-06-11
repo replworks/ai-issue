@@ -1,4 +1,4 @@
-module ai-issue
+module github.com/replworks/ai-issue
 
 go 1.24
 

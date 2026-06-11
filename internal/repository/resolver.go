@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"ai-issue/internal/extraction"
+	"github.com/replworks/ai-issue/internal/extraction"
 )
 
 func ResolveRepository() (string, error) {
