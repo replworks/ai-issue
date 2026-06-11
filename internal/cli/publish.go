@@ -40,10 +40,16 @@ func runPublish() error {
 	if err != nil {
 		return err
 	}
+	if err := extraction.ValidateIssueDraft(draft); err != nil {
+		return err
+	}
 
 	// 3. Resolve repo
 	repo, err := repository.ResolveRepository()
 	if err != nil {
+		return err
+	}
+	if err := repository.ValidateRepository(repo); err != nil {
 		return err
 	}
 
@@ -67,6 +73,9 @@ func runPublish() error {
 	}
 
 	pubService := publisher.NewService(ghClient, "ai-backlog-bot")
+	if err := publisher.ValidatePublisher("ai-backlog-bot"); err != nil {
+		return err
+	}
 
 	publishable := &domain.PublishableIssue{
 		Title:      draft.Title,

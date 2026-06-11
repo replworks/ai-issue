@@ -27,9 +27,7 @@ func TestExtractIssue(t *testing.T) {
 		{
 			name:    "no title",
 			content: "Just some content without heading.",
-			wantTitle: "Untitled AI Issue",
-			wantBody:  "Just some content without heading.",
-			wantErr:   false,
+			wantErr:  true,
 		},
 	}
 
@@ -45,6 +43,9 @@ func TestExtractIssue(t *testing.T) {
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
+			}
+			if draft == nil {
+				t.Fatal("expected draft, got nil")
 			}
 			if draft.Title != tt.wantTitle {
 				t.Errorf("Title = %v, want %v", draft.Title, tt.wantTitle)

@@ -4,6 +4,7 @@ import (
 	"ai-issue/internal/adapter/github"
 	"ai-issue/internal/domain"
 	"fmt"
+	"strings"
 )
 
 type Service struct {
@@ -16,6 +17,13 @@ func NewService(ghClient *github.Client, botName string) *Service {
 }
 
 func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
+	if err := ValidatePublisher(s.botName); err != nil {
+		return "", err
+	}
+	if issue == nil {
+		return "", fmt.Errorf("publishable issue is required")
+	}
+
 	// Add AI marker
 	fullBody := fmt.Sprintf("**AI Generated** • Published by @%s\n\n%s", s.botName, issue.Body)
 
@@ -25,4 +33,11 @@ func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
 	}
 
 	return url, nil
+}
+
+func ValidatePublisher(username string) error {
+	if strings.TrimSpace(username) == "" {
+		return fmt.Errorf("publisher information is required")
+	}
+	return nil
 }

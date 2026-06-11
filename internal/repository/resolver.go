@@ -15,8 +15,10 @@ func ResolveRepository() (string, error) {
 	}
 
 	repoURL := strings.TrimSpace(string(output))
-	// Simple extraction, e.g., git@github.com:owner/repo.git -> owner/repo
 	repo := extractRepoName(repoURL)
+	if err := ValidateRepository(repo); err != nil {
+		return "", err
+	}
 	return repo, nil
 }
 
@@ -46,4 +48,16 @@ func extractRepoName(url string) string {
 
 func NewError(kind, msg string) error {
 	return extraction.NewError(kind, msg) // reuse
+}
+
+func ValidateRepository(repo string) error {
+	repo = strings.TrimSpace(repo)
+	if repo == "" {
+		return NewError("repository", "Repository could not be determined.")
+	}
+	parts := strings.Split(repo, "/")
+	if len(parts) != 2 || strings.TrimSpace(parts[0]) == "" || strings.TrimSpace(parts[1]) == "" {
+		return NewError("repository", "Repository could not be determined.")
+	}
+	return nil
 }

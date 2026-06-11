@@ -6,6 +6,9 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
+
+	"ai-issue/internal/publisher"
+	"ai-issue/internal/repository"
 )
 
 var diagnoseCmd = &cobra.Command{
@@ -19,6 +22,20 @@ var diagnoseCmd = &cobra.Command{
 			fmt.Println("✅ Git: OK")
 		} else {
 			fmt.Println("❌ Git: Not found")
+		}
+
+		// Repository check
+		if repo, err := repository.ResolveRepository(); err == nil {
+			fmt.Printf("✅ Repository validation: %s\n", repo)
+		} else {
+			fmt.Printf("❌ Repository validation: %v\n", err)
+		}
+
+		// Publisher check
+		if err := publisher.ValidatePublisher("ai-backlog-bot"); err == nil {
+			fmt.Println("✅ Publisher validation: ai-backlog-bot")
+		} else {
+			fmt.Printf("❌ Publisher validation: %v\n", err)
 		}
 
 		// Clipboard (simple check)
