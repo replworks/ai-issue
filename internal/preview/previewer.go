@@ -6,6 +6,10 @@ import (
 )
 
 func FormatPreview(repo, title, body, publisher string) string {
+	return FormatPreviewWithOptions(repo, title, body, publisher, true, false)
+}
+
+func FormatPreviewWithOptions(repo, title, body, publisher string, prompt bool, dryRun bool) string {
 	var b strings.Builder
 	b.WriteString("\n=== AI Issue Preview ===\n")
 	fmt.Fprintf(&b, "Repository: %s\n", repo)
@@ -17,10 +21,20 @@ func FormatPreview(repo, title, body, publisher string) string {
 	} else {
 		b.WriteString(body + "\n")
 	}
-	b.WriteString("\nCreate Issue? (Y/n): ")
+	if dryRun {
+		b.WriteString("\nDry run mode enabled.\nNo GitHub Issue will be created.\n")
+		return b.String()
+	}
+	if prompt {
+		b.WriteString("\nCreate Issue? (Y/n): ")
+	}
 	return b.String()
 }
 
 func ShowPreview(repo, title, body, publisher string) {
 	fmt.Print(FormatPreview(repo, title, body, publisher))
+}
+
+func ShowDryRunPreview(repo, title, body, publisher string) {
+	fmt.Print(FormatPreviewWithOptions(repo, title, body, publisher, false, true))
 }
