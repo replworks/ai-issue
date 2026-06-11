@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -17,7 +18,7 @@ type Client struct {
 func NewClient() (*Client, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
-		return nil, extraction.NewError("auth", "GITHUB_TOKEN environment variable is required. Set it with your ai-backlog-bot token.")
+		return nil, extraction.NewError("auth", "GITHUB_TOKEN environment variable is required.")
 	}
 	return &Client{token: token}, nil
 }
@@ -30,24 +31,39 @@ func (c *Client) CreateIssue(repo, title, body string) (string, error) {
 		"body":  body,
 	}
 
-	jsonData, _ := json.Marshal(payload)
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "", err
+	}
+
 	req.Header.Set("Authorization", "token "+c.token)
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("GitHub API error: %s", resp.Status)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("GitHub API error (%d): %s", resp.StatusCode, string(bodyBytes))
 	}
 
-	// In real implementation, parse response for HTML URL
-	return fmt.Sprintf("https://github.com/%s/issues", repo), nil
+	// Parse response to get real HTML URL
+	var result struct {
+		HTMLURL string `json:"html_url"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		// fallback
+		return fmt.Sprintf("https://github.com/%s/issues", repo), nil
+	}
+
+	return result.HTMLURL, nil
 }
