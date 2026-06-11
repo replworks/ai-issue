@@ -9,6 +9,7 @@ type PublishableIssue struct {
 	Title      string
 	Body       string
 	Repository string
+	Publisher  string
 }
 
 type Publisher struct {
