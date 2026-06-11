@@ -131,7 +131,7 @@ Acceptance Criteria:
 ### Release
 
 * [X] Prepare release artifacts
-* [ ] Publish v0.1.0
+* [X] Publish v0.1.0
 
 Acceptance Criteria:
 
