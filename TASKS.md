@@ -17,12 +17,12 @@
 * [X] Validate content exists
 * [X] Extract issue title
 * [X] Extract issue body
-* [ ] Validate issue draft
+* [ ] Validate extracted issue draft
 
 Acceptance Criteria:
 
-* Valid markdown produces a valid issue draft
-* Invalid markdown is rejected
+* Markdown with a first H1 heading produces a valid issue draft
+* Markdown without content is rejected
 * Missing title is rejected
 
 ---
@@ -30,7 +30,7 @@ Acceptance Criteria:
 ### Repository Resolution
 
 * [X] Determine target repository
-* [ ] Validate repository information
+* [ ] Validate resolved repository
 
 Acceptance Criteria:
 
@@ -42,7 +42,7 @@ Acceptance Criteria:
 ### Publisher Resolution
 
 * [X] Determine publishing user
-* [ ] Validate publisher information
+* [ ] Validate resolved publisher
 
 Acceptance Criteria:
 
@@ -54,7 +54,7 @@ Acceptance Criteria:
 
 * [X] Construct publishable issue
 * [ ] Preserve publisher traceability
-* [ ] Validate final issue payload
+* [ ] Validate final publishable issue payload
 
 Acceptance Criteria:
 
@@ -93,7 +93,7 @@ Acceptance Criteria:
 ### Diagnostics
 
 * [X] Validate publishing prerequisites
-* [ ] Report validation results
+* [ ] Report diagnostic results
 
 Acceptance Criteria:
 
@@ -104,7 +104,7 @@ Acceptance Criteria:
 ### Error Handling
 
 * [X] Handle missing content
-* [ ] Handle invalid issue drafts
+* [ ] Handle invalid extracted issue drafts
 * [X] Handle repository failures
 * [X] Handle authentication failures
 * [X] Handle publication failures
@@ -118,9 +118,9 @@ Acceptance Criteria:
 ### Testing
 
 * [X] Unit tests
-* [ ] End-to-end publication test
-* [ ] Architecture validation
-* [ ] Manual MVP validation
+* [ ] End-to-end publication flow test
+* [ ] Architecture compliance validation
+* [ ] Manual MVP flow validation
 
 Acceptance Criteria:
 
