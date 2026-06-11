@@ -44,7 +44,13 @@ This distinction helps teams avoid confusion about ownership and ensures AI-gene
 
 ### Dedicated AI Identity
 
-Issues are created using a dedicated GitHub account (for example, `ai-backlog-bot`).
+Issues are created using a dedicated GitHub account.
+
+By default, the CLI uses `ai-backlog-bot`, but you can override it locally with `AI_ISSUE_PUBLISHER`:
+
+```bash
+export AI_ISSUE_PUBLISHER=replworks-bot
+```
 
 This makes it immediately obvious that:
 
@@ -121,6 +127,7 @@ Recommended:
 2. Generate a Fine-grained Personal Access Token (PAT).
 3. Grant repository access.
 4. Configure the token locally.
+5. Set `AI_ISSUE_PUBLISHER` if you publish with a different account name.
 
 ### Create a GitHub Personal Access Token
 
@@ -182,6 +189,20 @@ Without approval, GitHub will reject issue creation requests.
 export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
 ```
 
+### Set Publisher Identity
+
+If you publish issues from a different bot account, configure the displayed publisher identity locally:
+
+```bash
+export AI_ISSUE_PUBLISHER=replworks-bot
+```
+
+You can include the `@` prefix if you prefer:
+
+```bash
+export AI_ISSUE_PUBLISHER=@replworks-bot
+```
+
 ### Set GitHub Token
 
 ```bash
@@ -235,7 +256,7 @@ Publish the markdown from your clipboard as a new GitHub Issue.
 ai-issue diagnose
 ```
 
-Check Git availability, repository resolution, publisher validation, clipboard availability, and token configuration.
+Check Git availability, repository resolution, publisher validation, clipboard availability, token configuration, and repository access.
 
 ```bash
 ai-issue --help
@@ -273,13 +294,12 @@ ai-issue
 Repository: yourname/project
 
 Title: Add timestamps to logging system
+Publisher: @ai-backlog-bot
 
 Body preview:
 Current logs do not contain timestamps, making debugging difficult.
 
 **Publisher:** @ai-backlog-bot
-
-This issue will be created by ai-backlog-bot account.
 
 Create Issue? (Y/n):
 ```
@@ -301,6 +321,14 @@ Configure the environment variable:
 
 ```bash
 export GITHUB_TOKEN=...
+```
+
+### Publisher identity is configurable
+
+If you publish from a different bot account, set:
+
+```bash
+export AI_ISSUE_PUBLISHER=your-bot-name
 ```
 
 ### Repository could not be determined

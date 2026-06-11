@@ -25,7 +25,7 @@ type APIError struct {
 func NewClient() (*Client, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
-		return nil, extraction.NewError("auth", "GITHUB_TOKEN environment variable is required. Set it with your ai-backlog-bot token.")
+		return nil, extraction.NewError("auth", "GITHUB_TOKEN environment variable is required. Set it with your publisher token.")
 	}
 	return &Client{
 		Token:      token,

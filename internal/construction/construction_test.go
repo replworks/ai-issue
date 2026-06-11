@@ -1,6 +1,7 @@
 package construction
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/replworks/ai-issue/internal/domain"
@@ -30,6 +31,24 @@ func TestBuildPublishableIssue(t *testing.T) {
 	}
 	if issue.Body == draft.Body {
 		t.Fatal("expected publisher traceability to be preserved in body")
+	}
+}
+
+func TestBuildPublishableIssueTrimsPublisherPrefix(t *testing.T) {
+	draft := &domain.IssueDraft{
+		Title: "Add timestamps to logging",
+		Body:  "Current logs do not contain timestamps.",
+	}
+
+	issue, err := BuildPublishableIssue(draft, "company/backend", "@project-ai-bot")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if issue.Publisher != "project-ai-bot" {
+		t.Fatalf("publisher = %q, want %q", issue.Publisher, "project-ai-bot")
+	}
+	if !contains(issue.Body, "**Publisher:** @project-ai-bot") {
+		t.Fatalf("body = %q, want publisher footer", issue.Body)
 	}
 }
 
@@ -90,4 +109,8 @@ func TestValidatePublishableIssue(t *testing.T) {
 			}
 		})
 	}
+}
+
+func contains(s, substr string) bool {
+	return strings.Contains(s, substr)
 }
