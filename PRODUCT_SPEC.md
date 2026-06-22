@@ -155,6 +155,12 @@ The product shall provide a diagnostic command that validates publishing prerequ
 
 ---
 
+## FR-011
+
+The product shall support GitHub App login through device flow authentication.
+
+---
+
 # Issue Construction Rules
 
 ## Title Rule
@@ -192,6 +198,16 @@ The issue body is generated from the remaining markdown content after title extr
 ## Publisher Rule
 
 Publisher information must be preserved as part of the generated issue.
+
+---
+
+# Authentication
+
+The product uses a GitHub App user access token obtained through device flow authentication.
+
+The user authenticates with the `ai-issue login` command.
+
+The token is stored locally and reused for publishing and diagnostics.
 
 ---
 

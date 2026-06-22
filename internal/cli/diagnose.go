@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -52,20 +51,17 @@ var diagnoseCmd = &cobra.Command{
 		// Clipboard (simple check)
 		fmt.Println("✅ Clipboard support: Available")
 
-		// GITHUB_TOKEN
-		if os.Getenv("GITHUB_TOKEN") != "" {
-			fmt.Println("✅ GITHUB_TOKEN: Set")
-		} else {
-			fmt.Println("⚠️  GITHUB_TOKEN: Not set (required for publishing)")
+		// GitHub App token
+		ghClient, err := github.NewClient()
+		if err != nil {
+			fmt.Printf("❌ GitHub App token: %v\n", err)
 			failed = true
+		} else {
+			fmt.Println("✅ GitHub App token: Loaded")
 		}
 
-		if os.Getenv("GITHUB_TOKEN") != "" && repo != "" {
-			ghClient, err := github.NewClient()
-			if err != nil {
-				fmt.Printf("\n❌ Repository access: Forbidden\n\nReason:\n%s\n", err)
-				failed = true
-			} else if err := ghClient.CheckRepositoryAccess(repo); err != nil {
+		if err == nil && repo != "" {
+			if err := ghClient.CheckRepositoryAccess(repo); err != nil {
 				if accessErr, ok := err.(*github.RepositoryAccessError); ok && accessErr.Message != "" {
 					fmt.Printf("\n❌ Repository access: Forbidden\n\nReason:\n%s\n", accessErr.Message)
 				} else {

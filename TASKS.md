@@ -50,6 +50,20 @@ Acceptance Criteria:
 
 ---
 
+### Authentication
+
+* [ ] Implement GitHub App device flow login
+* [ ] Store and load GitHub App token locally
+* [ ] Use stored token for publishing and diagnostics
+
+Acceptance Criteria:
+
+* `ai-issue login` obtains a GitHub App user access token
+* Token is persisted locally
+* Publishing works without manual PAT setup
+
+---
+
 ### Issue Construction
 
 * [X] Construct publishable issue

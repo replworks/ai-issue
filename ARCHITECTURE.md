@@ -178,6 +178,25 @@ Repository Resolution must occur before publication.
 
 ---
 
+# Authentication Resolution
+
+Responsibilities:
+
+* initiate device flow login
+* obtain user access token
+* persist token locally
+* load token for publishing and diagnostics
+
+Outputs:
+
+```text
+GitHub App User Token
+```
+
+Authentication Resolution is not responsible for issue creation or repository selection.
+
+---
+
 # Issue Construction
 
 Responsibilities:

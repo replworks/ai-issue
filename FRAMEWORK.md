@@ -103,6 +103,8 @@ Never:
 * commit secrets
 * store secrets in repository files
 
+GitHub App device flow tokens must be stored locally with restricted file permissions.
+
 ---
 
 # Markdown Processing
