@@ -159,7 +159,13 @@ The product shall provide a diagnostic command that validates publishing prerequ
 
 ## Title Rule
 
-The first H1 heading becomes the issue title.
+The first heading at the top of the markdown becomes the issue title.
+
+Supported heading levels:
+
+* H1
+* H2
+* H3
 
 Example:
 
@@ -172,6 +178,8 @@ becomes
 ```text
 Add timestamps to logging system
 ```
+
+The same rule applies to the first `##` or `###` heading when it appears at the top of the markdown.
 
 ---
 
