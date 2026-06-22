@@ -3,6 +3,8 @@ package cli
 import (
 	"context"
 	"fmt"
+	"os/exec"
+	"runtime"
 	"strings"
 	"time"
 
@@ -31,6 +33,11 @@ func runLogin(ctx context.Context) error {
 	fmt.Println("Open this URL in your browser:")
 	fmt.Println(device.VerificationURI)
 	fmt.Printf("Enter this code: %s\n", device.UserCode)
+	if err := openBrowser(device.VerificationURI); err == nil {
+		fmt.Println("Browser opened automatically.")
+	} else {
+		fmt.Printf("Could not open browser automatically: %v\n", err)
+	}
 
 	interval := time.Duration(device.Interval) * time.Second
 	if interval <= 0 {
@@ -72,4 +79,15 @@ func runLogin(ctx context.Context) error {
 	}
 
 	return fmt.Errorf("device code expired. Run `ai-issue login` again")
+}
+
+func openBrowser(target string) error {
+	switch runtime.GOOS {
+	case "darwin":
+		return exec.Command("open", target).Run()
+	case "windows":
+		return exec.Command("cmd", "/c", "start", "", target).Run()
+	default:
+		return exec.Command("xdg-open", target).Run()
+	}
 }
