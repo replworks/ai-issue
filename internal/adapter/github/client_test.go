@@ -1,6 +1,7 @@
 package github
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,11 +12,20 @@ func TestCreateIssueSuccess(t *testing.T) {
 	var gotMethod string
 	var gotPath string
 	var gotAuth string
+	var gotLabels []string
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotMethod = r.Method
 		gotPath = r.URL.Path
 		gotAuth = r.Header.Get("Authorization")
+		var payload map[string]interface{}
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		if labels, ok := payload["labels"].([]interface{}); ok {
+			gotLabels = make([]string, 0, len(labels))
+			for _, label := range labels {
+				gotLabels = append(gotLabels, label.(string))
+			}
+		}
 		w.WriteHeader(http.StatusCreated)
 		_, _ = w.Write([]byte(`{"html_url":"https://github.com/company/backend/issues/1"}`))
 	}))
@@ -27,7 +37,7 @@ func TestCreateIssueSuccess(t *testing.T) {
 		BaseURL:    server.URL,
 	}
 
-	url, err := client.CreateIssue("company/backend", "Title", "Body")
+	url, err := client.CreateIssue("company/backend", "Title", "Body", []string{"ai-generated"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -43,6 +53,9 @@ func TestCreateIssueSuccess(t *testing.T) {
 	if gotAuth != "token token-123" {
 		t.Fatalf("auth = %q, want %q", gotAuth, "token token-123")
 	}
+	if len(gotLabels) != 1 || gotLabels[0] != "ai-generated" {
+		t.Fatalf("labels = %v, want [ai-generated]", gotLabels)
+	}
 }
 
 func TestCreateIssueFailure(t *testing.T) {
@@ -57,7 +70,7 @@ func TestCreateIssueFailure(t *testing.T) {
 		BaseURL:    server.URL,
 	}
 
-	_, err := client.CreateIssue("company/backend", "Title", "Body")
+	_, err := client.CreateIssue("company/backend", "Title", "Body", nil)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}

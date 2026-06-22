@@ -20,10 +20,6 @@ func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherNa
 		issue.Body = strings.TrimSpace(draft.Body)
 	}
 
-	if publisherName != "" {
-		issue.Body = strings.TrimSpace(issue.Body + "\n\n**Publisher:** @" + publisherName)
-	}
-
 	if err := ValidatePublishableIssue(issue); err != nil {
 		return nil, err
 	}

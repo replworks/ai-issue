@@ -15,6 +15,12 @@ test:
 vet:
 	go vet ./...
 
+lint: ## runs golangci-lint via go run
+	golangci-lint run ./...
+
+lint-fix: ## automatically fix lint issues where possible
+	golangci-lint run --fix ./...
+
 check: fmt-check vet test
 
 build:
