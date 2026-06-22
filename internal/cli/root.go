@@ -40,4 +40,5 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Display the issue preview without creating a GitHub Issue")
 	rootCmd.AddCommand(publishCmd)
 	rootCmd.AddCommand(diagnoseCmd)
+	rootCmd.AddCommand(loginCmd)
 }

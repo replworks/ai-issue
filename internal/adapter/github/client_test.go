@@ -50,8 +50,8 @@ func TestCreateIssueSuccess(t *testing.T) {
 	if gotPath != "/repos/company/backend/issues" {
 		t.Fatalf("path = %q, want %q", gotPath, "/repos/company/backend/issues")
 	}
-	if gotAuth != "token token-123" {
-		t.Fatalf("auth = %q, want %q", gotAuth, "token token-123")
+	if gotAuth != "Bearer token-123" {
+		t.Fatalf("auth = %q, want %q", gotAuth, "Bearer token-123")
 	}
 	if len(gotLabels) != 1 || gotLabels[0] != "ai-generated" {
 		t.Fatalf("labels = %v, want [ai-generated]", gotLabels)
@@ -110,8 +110,8 @@ func TestCheckRepositoryAccessSuccess(t *testing.T) {
 	if gotPath != "/repos/company/backend" {
 		t.Fatalf("path = %q, want %q", gotPath, "/repos/company/backend")
 	}
-	if gotAuth != "token token-123" {
-		t.Fatalf("auth = %q, want %q", gotAuth, "token token-123")
+	if gotAuth != "Bearer token-123" {
+		t.Fatalf("auth = %q, want %q", gotAuth, "Bearer token-123")
 	}
 	if gotAccept != "application/vnd.github+json" {
 		t.Fatalf("accept = %q, want %q", gotAccept, "application/vnd.github+json")
@@ -145,5 +145,11 @@ func TestCheckRepositoryAccessFailureParsesMessage(t *testing.T) {
 	}
 	if accessErr.Message != "fine-grained tokens are not allowed for this org" {
 		t.Fatalf("message = %q, want %q", accessErr.Message, "fine-grained tokens are not allowed for this org")
+	}
+	if accessErr.RawBody == "" {
+		t.Fatal("expected raw body to be preserved")
+	}
+	if accessErr.Headers == nil {
+		t.Fatal("expected response headers to be preserved")
 	}
 }
