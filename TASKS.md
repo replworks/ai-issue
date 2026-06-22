@@ -21,7 +21,7 @@
 
 Acceptance Criteria:
 
-* Markdown with a first H1 heading produces a valid issue draft
+* Markdown with a first H1, H2, or H3 heading produces a valid issue draft
 * Markdown without content is rejected
 * Missing title is rejected
 

@@ -25,6 +25,20 @@ func TestExtractIssue(t *testing.T) {
 			wantErr:   false,
 		},
 		{
+			name:      "with h2 title",
+			content:   "## Add timestamps to logging\n\nCurrent logs do not contain timestamps.",
+			wantTitle: "Add timestamps to logging",
+			wantBody:  "Current logs do not contain timestamps.",
+			wantErr:   false,
+		},
+		{
+			name:      "with h3 title",
+			content:   "### Add timestamps to logging\n\nCurrent logs do not contain timestamps.",
+			wantTitle: "Add timestamps to logging",
+			wantBody:  "Current logs do not contain timestamps.",
+			wantErr:   false,
+		},
+		{
 			name:      "with inline code title",
 			content:   "# Add `--version` Support\n\nBody text.",
 			wantTitle: "Add `--version` Support",

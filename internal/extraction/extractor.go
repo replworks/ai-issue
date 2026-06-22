@@ -37,7 +37,7 @@ func extractTitleAndBody(md string) (string, string) {
 			return ast.WalkContinue, nil
 		}
 		heading, ok := node.(*ast.Heading)
-		if !ok || heading.Level != 1 {
+		if !ok || heading.Level < 1 || heading.Level > 3 {
 			return ast.WalkContinue, nil
 		}
 
