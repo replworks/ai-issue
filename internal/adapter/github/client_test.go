@@ -146,4 +146,10 @@ func TestCheckRepositoryAccessFailureParsesMessage(t *testing.T) {
 	if accessErr.Message != "fine-grained tokens are not allowed for this org" {
 		t.Fatalf("message = %q, want %q", accessErr.Message, "fine-grained tokens are not allowed for this org")
 	}
+	if accessErr.RawBody == "" {
+		t.Fatal("expected raw body to be preserved")
+	}
+	if accessErr.Headers == nil {
+		t.Fatal("expected response headers to be preserved")
+	}
 }

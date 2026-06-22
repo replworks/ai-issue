@@ -228,6 +228,8 @@ func (c *Client) CheckRepositoryAccess(repo string) error {
 		return &RepositoryAccessError{
 			Status:  http.StatusText(resp.StatusCode),
 			Message: githubErrorMessage(body),
+			Headers: resp.Header.Clone(),
+			RawBody: strings.TrimSpace(string(body)),
 		}
 	}
 
@@ -237,6 +239,8 @@ func (c *Client) CheckRepositoryAccess(repo string) error {
 type RepositoryAccessError struct {
 	Status  string
 	Message string
+	Headers http.Header
+	RawBody string
 }
 
 func (e *RepositoryAccessError) Error() string {

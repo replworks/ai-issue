@@ -62,8 +62,17 @@ var diagnoseCmd = &cobra.Command{
 
 		if err == nil && repo != "" {
 			if err := ghClient.CheckRepositoryAccess(repo); err != nil {
-				if accessErr, ok := err.(*github.RepositoryAccessError); ok && accessErr.Message != "" {
-					fmt.Printf("\n❌ Repository access: Forbidden\n\nReason:\n%s\n", accessErr.Message)
+				if accessErr, ok := err.(*github.RepositoryAccessError); ok {
+					fmt.Printf("\n❌ Repository access: Forbidden\n")
+					if accessErr.Message != "" {
+						fmt.Printf("\nReason:\n%s\n", accessErr.Message)
+					}
+					if sso := accessErr.Headers.Get("X-GitHub-SSO"); sso != "" {
+						fmt.Printf("\nX-GitHub-SSO:\n%s\n", sso)
+					}
+					if accessErr.RawBody != "" {
+						fmt.Printf("\nRaw response:\n%s\n", accessErr.RawBody)
+					}
 				} else {
 					fmt.Printf("\n❌ Repository access: Forbidden\n\nReason:\n%s\n", err)
 				}
