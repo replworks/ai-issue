@@ -29,8 +29,8 @@ func TestBuildPublishableIssue(t *testing.T) {
 	if issue.Publisher != "ai-backlog-bot" {
 		t.Fatalf("publisher = %q, want %q", issue.Publisher, "ai-backlog-bot")
 	}
-	if issue.Body == draft.Body {
-		t.Fatal("expected publisher traceability to be preserved in body")
+	if issue.Body != draft.Body {
+		t.Fatalf("body = %q, want %q", issue.Body, draft.Body)
 	}
 }
 
@@ -47,8 +47,8 @@ func TestBuildPublishableIssueTrimsPublisherPrefix(t *testing.T) {
 	if issue.Publisher != "project-ai-bot" {
 		t.Fatalf("publisher = %q, want %q", issue.Publisher, "project-ai-bot")
 	}
-	if !contains(issue.Body, "**Publisher:** @project-ai-bot") {
-		t.Fatalf("body = %q, want publisher footer", issue.Body)
+	if issue.Body != draft.Body {
+		t.Fatalf("body = %q, want %q", issue.Body, draft.Body)
 	}
 }
 

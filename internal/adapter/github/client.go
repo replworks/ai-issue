@@ -34,7 +34,7 @@ func NewClient() (*Client, error) {
 	}, nil
 }
 
-func (c *Client) CreateIssue(repo, title, body string) (string, error) {
+func (c *Client) CreateIssue(repo, title, body string, labels []string) (string, error) {
 	if c == nil {
 		return "", fmt.Errorf("GitHub client is not initialized")
 	}
@@ -50,6 +50,9 @@ func (c *Client) CreateIssue(repo, title, body string) (string, error) {
 	payload := map[string]interface{}{
 		"title": title,
 		"body":  body,
+	}
+	if len(labels) > 0 {
+		payload["labels"] = labels
 	}
 
 	jsonData, err := json.Marshal(payload)

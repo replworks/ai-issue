@@ -25,10 +25,7 @@ func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
 		return "", fmt.Errorf("publishable issue is required")
 	}
 
-	// Add AI marker
-	fullBody := fmt.Sprintf("**AI Generated** • Published by @%s\n\n%s", s.botName, issue.Body)
-
-	url, err := s.ghClient.CreateIssue(issue.Repository, issue.Title, fullBody)
+	url, err := s.ghClient.CreateIssue(issue.Repository, issue.Title, issue.Body, []string{"ai-generated"})
 	if err != nil {
 		return "", err
 	}

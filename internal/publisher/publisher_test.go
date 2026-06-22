@@ -1,6 +1,7 @@
 package publisher
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,9 +13,13 @@ import (
 )
 
 func TestEndToEndPublicationFlow(t *testing.T) {
+	var gotBody map[string]interface{}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			t.Fatalf("method = %s, want POST", r.Method)
+		}
+		if err := json.NewDecoder(r.Body).Decode(&gotBody); err != nil {
+			t.Fatalf("failed to decode body: %v", err)
 		}
 		w.WriteHeader(http.StatusCreated)
 	}))
@@ -43,5 +48,12 @@ func TestEndToEndPublicationFlow(t *testing.T) {
 	}
 	if !strings.Contains(url, "company/backend") {
 		t.Fatalf("url = %q, want repository path", url)
+	}
+	if body, _ := gotBody["body"].(string); strings.Contains(body, "AI Generated") || strings.Contains(body, "Publisher:") {
+		t.Fatalf("body = %q, want clean issue body", body)
+	}
+	labels, _ := gotBody["labels"].([]interface{})
+	if len(labels) != 1 || labels[0] != "ai-generated" {
+		t.Fatalf("labels = %v, want [ai-generated]", labels)
 	}
 }
