@@ -1,7 +1,6 @@
 package construction
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/replworks/ai-issue/internal/domain"
@@ -109,8 +108,4 @@ func TestValidatePublishableIssue(t *testing.T) {
 			}
 		})
 	}
-}
-
-func contains(s, substr string) bool {
-	return strings.Contains(s, substr)
 }
