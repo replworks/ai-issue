@@ -38,13 +38,13 @@ func LoadToken() (string, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return "", fmt.Errorf("GitHub App token not found. Run `ai-issue login` first.")
+			return "", fmt.Errorf("GitHub App token not found. Run `ai-issue login` first")
 		}
 		return "", fmt.Errorf("failed to read GitHub App token: %w", err)
 	}
 	token := strings.TrimSpace(string(data))
 	if token == "" {
-		return "", fmt.Errorf("GitHub App token not found. Run `ai-issue login` first.")
+		return "", fmt.Errorf("GitHub App token not found. Run `ai-issue login` first")
 	}
 	return token, nil
 }
