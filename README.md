@@ -34,16 +34,22 @@ ai-issue diagnose
 
 ## Configuration
 
-Create a GitHub Fine-grained Personal Access Token with:
-
-```text
-Issues: Read and write
-```
-
-Then configure:
+Authenticate with the GitHub App device flow:
 
 ```bash
-export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
+ai-issue login
+```
+
+The command will:
+
+- open the GitHub device login page
+- show you an 8-digit code to enter
+- save the resulting token locally after authorization
+
+The token is stored at:
+
+```text
+~/.config/ai-issue/token
 ```
 
 Optional:
@@ -51,6 +57,8 @@ Optional:
 ```bash
 export AI_ISSUE_PUBLISHER=replworks-bot
 ```
+
+The GitHub App must be installed on the repository or organization you want to publish to.
 
 ---
 
@@ -141,10 +149,10 @@ This makes AI-generated issues immediately identifiable while preserving human a
 
 ## Troubleshooting
 
-### GITHUB_TOKEN is required
+### GitHub App token is required
 
 ```bash
-export GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxx
+ai-issue login
 ```
 
 ### Repository could not be determined
@@ -155,15 +163,14 @@ Run the command inside a Git repository.
 
 Copy AI-generated markdown before running the command.
 
-### Resource not accessible by personal access token
+### Resource not accessible by app token
 
 Verify:
 
-- Fine-grained PAT is being used
+- The GitHub App is installed on the target repository or organization
 - `Issues: Read and write` permission is granted
-- Repository access is granted
-- Organization approval is completed (if required)
-- Token expiration is 366 days or less
+- You completed `ai-issue login` after installing the app
+- Organization approval or SSO authorization is complete, if required
 
 ### Need more details?
 
