@@ -174,7 +174,7 @@ func (c *Client) CreateIssue(repo, title, body string, labels []string) (string,
 	if err != nil {
 		return "", fmt.Errorf("failed to create GitHub issue request: %w", err)
 	}
-	req.Header.Set("Authorization", "token "+c.Token)
+	req.Header.Set("Authorization", "Bearer "+c.Token)
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	req.Header.Set("Content-Type", "application/json")
 
@@ -212,7 +212,7 @@ func (c *Client) CheckRepositoryAccess(repo string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create GitHub repository access request: %w", err)
 	}
-	req.Header.Set("Authorization", "token "+c.Token)
+	req.Header.Set("Authorization", "Bearer "+c.Token)
 	req.Header.Set("Accept", "application/vnd.github+json")
 
 	resp, err := c.HTTPClient.Do(req)
