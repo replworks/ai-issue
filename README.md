@@ -46,11 +46,13 @@ The command will:
 - show you an 8-digit code to enter
 - save the resulting token locally after authorization
 
-The token is stored at:
+The token is stored at `os.UserConfigDir()/ai-issue/token`:
 
-```text
-~/.config/ai-issue/token
-```
+| OS      | Path                                           |
+| ------- | ---------------------------------------------- |
+| macOS   | `~/Library/Application Support/ai-issue/token` |
+| Linux   | `~/.config/ai-issue/token`                     |
+| Windows | `%AppData%\ai-issue\token`                     |
 
 Optional:
 
