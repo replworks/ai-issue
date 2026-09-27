@@ -1,5 +1,12 @@
 # AI Issue Publisher
 
+[![CI](https://github.com/replworks/ai-issue/actions/workflows/ci.yml/badge.svg)](https://github.com/replworks/ai-issue/actions/workflows/ci.yml)
+[![release](https://github.com/replworks/ai-issue/actions/workflows/release.yml/badge.svg)](https://github.com/replworks/ai-issue/actions/workflows/release.yml)
+[![update-changelog](https://github.com/replworks/ai-issue/actions/workflows/update-changelog.yml/badge.svg)](https://github.com/replworks/ai-issue/actions/workflows/update-changelog.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/replworks/ai-issue.svg)](https://pkg.go.dev/github.com/replworks/ai-issue)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/replworks/ai-issue)](https://github.com/replworks/ai-issue)
+![License](https://img.shields.io/github/license/replworks/ai-issue)
+
 > Stop losing good AI ideas in chat history.
 >
 > Turn AI conversations into GitHub Issues with one command.
