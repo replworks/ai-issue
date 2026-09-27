@@ -1,5 +1,14 @@
 # Release Notes
 
+## v1.1.1 - 2026-09-27
+
+### What's Changed
+
+* docs: clarify token storage paths in `README.md` by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/40
+* feat: update GitHub actions workflows for release and changelog automation by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/41
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.1.0...v1.1.1
+
 ## v1.1.0 - 2026-06-22
 
 ### What's Changed
