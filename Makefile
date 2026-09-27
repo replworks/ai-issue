@@ -25,3 +25,9 @@ check: fmt-check vet test
 
 build:
 	go build -o ai-issue ./cmd/ai-issue
+
+release-check: ## validates .goreleaser.yaml without building anything
+	goreleaser check
+
+snapshot: ## builds all release targets locally without publishing, for pre-tag verification
+	goreleaser release --snapshot --clean
