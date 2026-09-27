@@ -41,13 +41,13 @@ homebrew_casks:
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
 
     homepage: "https://github.com/replworks/{{ .ProjectName }}"
-    description: "A CLI tool to publish AI-generated ideas as GitHub Issues, clearly separating AI authorship from human responsibility."
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ai-issue"]
-          end
+    description: "Publish AI-generated ideas as GitHub Issues with publisher traceability"
+    custom_block: |
+      on_macos do
+        postflight_steps do
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ "{{" }}staged_path{{ "}}" }}/ai-issue"]
+        end
+      end
 
 checksum:
   name_template: "checksums.txt"
