@@ -13,7 +13,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    binary: ai-issue
+    binary: "{{ .ProjectName }}"
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
@@ -22,6 +22,9 @@ builds:
 
 archives:
   - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -30,24 +33,21 @@ archives:
     files:
       - LICENSE
       - README.md
-      - PRODUCT_SPEC.md
-      - ARCHITECTURE.md
-      - FRAMEWORK.md
 
-brews:
-  - name: ai-issue
-    repository:
+homebrew_casks:
+  - repository:
       owner: replworks
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
 
-    homepage: "https://github.com/replworks/ai-issue"
-
+    homepage: "https://github.com/replworks/{{ .ProjectName }}"
     description: "A CLI tool to publish AI-generated ideas as GitHub Issues, clearly separating AI authorship from human responsibility."
-
-    license: "MIT"
-
-    install: |
-      bin.install "ai-issue"
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ai-issue"]
+          end
 
 checksum:
   name_template: "checksums.txt"
@@ -66,5 +66,5 @@ release:
   github:
     owner: replworks
     name: ai-issue
-  draft: true
+  draft: false
   prerelease: auto
