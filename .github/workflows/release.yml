@@ -41,3 +41,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+      - name: Notify apt repository
+        env:
+          GH_TOKEN: ${{ secrets.APT_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/replworks/apt/dispatches \
+            -f event_type=release \
+            -f "client_payload[repo]=$GITHUB_REPOSITORY"

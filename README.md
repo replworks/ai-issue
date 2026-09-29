@@ -25,6 +25,20 @@ The AI writes the idea. Humans decide whether it becomes work.
 brew install replworks/tap/ai-issue
 ```
 
+### Debian / Ubuntu
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://apt.repl.net/replworks.gpg | sudo tee /etc/apt/keyrings/replworks.gpg >/dev/null
+echo "deb [signed-by=/etc/apt/keyrings/replworks.gpg] https://apt.repl.net stable main" | sudo tee /etc/apt/sources.list.d/replworks.list
+sudo apt update
+sudo apt install ai-issue
+```
+
+The Debian package installs `git` and one supported clipboard utility
+(`xclip`, `xsel`, or `wl-clipboard`) as dependencies. `xdg-utils` is recommended
+for opening the GitHub device-login page automatically.
+
 ### Go
 
 ```bash
