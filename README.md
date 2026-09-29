@@ -37,6 +37,18 @@ Verify installation:
 ai-issue diagnose
 ```
 
+### Linux requirements
+
+Linux builds are provided for `amd64` and `arm64`. The publish command reads
+the clipboard, so a desktop Linux environment must provide one of these
+clipboard utilities:
+
+- X11: `xclip` or `xsel`
+- Wayland: `wl-clipboard` (`wl-copy` and `wl-paste`)
+
+`xdg-open` is used to open the GitHub device-login page automatically. If it is
+not available, the URL is still printed and can be opened manually.
+
 ---
 
 ## Configuration
@@ -48,25 +60,29 @@ A PAT is the obvious first choice, and it works — until you need to publish to
 A PAT is tied to a specific authorization for the account that created it.
 Using it across multiple organizations means separately authorizing (or getting admin approval for) that PAT in each one, and re-doing that dance every time you add a new org. It works for a single repo or a single org, but it doesn't scale past that.
 
-AI Issue Publisher instead authenticates as a **GitHub App via device flow**. Concretely, this means:
+AI Issue Publisher instead authenticates with a **GitHub App user access token via device flow**. The token represents the GitHub account that authorizes the app, and GitHub attributes API activity to that account and the app.
 
-- You log in **once**, as a dedicated account.
-- To add a new organization, you install the app there and give that same account access — no new token, no per-org PAT approval.
-- Every issue is created under that one consistent, recognizable identity, across every org you've set up.
+- You log in once with the GitHub account you want to use for publishing.
+- To add a new organization, install the app there and give that same account access — no new token or per-organization PAT approval is required.
+- The GitHub account remains the Issue author; `ai-issue` also records the configured publisher identity in the Issue body.
 
-The trade-off: setup has two moving parts (the app installation, and the account's access) instead of one PAT. In exchange, adding a new org is a short checklist instead of a new credential to manage.
+The trade-off: setup has two moving parts (the app installation and the account's access) instead of one PAT. In exchange, adding a new organization is a short checklist instead of a new credential to manage.
 
 ### One-time setup
 
-1. **Decide on a publishing identity.**
-   By default, issues are published as `@ai-backlog-bot`. To use your own
-   dedicated bot account instead, create it now and set:
+1. **Choose the GitHub account that will authorize publishing.**
+   This can be your normal GitHub account. A separate bot account is optional,
+   not required. The account used during device flow authorization is the
+   account GitHub records as the Issue author.
+
+   The publisher label included in the Issue body defaults to `ai-backlog-bot`.
+   To customize that label, set:
 
 ```bash
    export AI_ISSUE_PUBLISHER=your-bot-account
 ```
 
-2. **Log in as that account.**
+2. **Log in with that account.**
 
 ```bash
    ai-issue login
@@ -76,7 +92,7 @@ This will:
 
 - open the GitHub device login page
 - show you an 8-digit code to enter
-- save the resulting token locally after you authorize as the account from step 1
+- save the resulting token locally after you authorize the app
 
 The token is stored at `os.UserConfigDir()/ai-issue/token`:
 
@@ -95,7 +111,7 @@ Repeat both steps for **every** organization or repository you want to publish t
 
    You can install it on all repositories or select specific ones.
 
-2. **Give the publishing account write access.** The account from step 1 of one-time setup needs its own access to the target repo — the app acts _as this account_, so installing the app alone is not enough.
+2. **Give the publishing account write access.** The account used during one-time setup needs its own access to the target repo — the app user token acts _on behalf of this account_, so installing the app alone is not enough.
    Either:
    - add it as an organization member with write access, or
    - add it as an outside collaborator on the specific repo
@@ -108,7 +124,7 @@ Why both are required:
 flowchart LR
     subgraph Org["Target Organization"]
         A[GitHub App installed?]
-        B[Bot account has repo access?]
+        B[Publishing account has repo access?]
     end
     A -->|No| F1[❌ Fails:<br/>app has no access]
     B -->|No| F2[❌ Fails:<br/>account has no access]
@@ -186,10 +202,13 @@ AI Issue Publisher is built around a simple principle:
 
 Publishing is always an explicit human decision.
 
-### Dedicated AI Identity
+### Publisher identity
 
-Issues are created under a dedicated AI identity rather than your personal account, so AI-generated issues are immediately identifiable while preserving human accountability for what actually gets published.
-See [Configuration](#configuration) for how this identity is set up.
+The GitHub account authorized through device flow is the actual Issue author. The
+configured publisher identity, which defaults to `ai-backlog-bot`, is metadata
+written into the Issue body so the publishing decision remains traceable.
+It does not change the GitHub author account.
+See [Configuration](#configuration) for how this label is configured.
 
 ---
 
