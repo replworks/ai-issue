@@ -41,17 +41,42 @@ ai-issue diagnose
 
 ## Configuration
 
-Authenticate with the GitHub App device flow:
+### Why not just a Personal Access Token?
+
+A PAT is the obvious first choice, and it works — until you need to publish to more than one organization.
+
+A PAT is tied to a specific authorization for the account that created it.
+Using it across multiple organizations means separately authorizing (or getting admin approval for) that PAT in each one, and re-doing that dance every time you add a new org. It works for a single repo or a single org, but it doesn't scale past that.
+
+AI Issue Publisher instead authenticates as a **GitHub App via device flow**. Concretely, this means:
+
+- You log in **once**, as a dedicated account.
+- To add a new organization, you install the app there and give that same account access — no new token, no per-org PAT approval.
+- Every issue is created under that one consistent, recognizable identity, across every org you've set up.
+
+The trade-off: setup has two moving parts (the app installation, and the account's access) instead of one PAT. In exchange, adding a new org is a short checklist instead of a new credential to manage.
+
+### One-time setup
+
+1. **Decide on a publishing identity.**
+   By default, issues are published as `@ai-backlog-bot`. To use your own
+   dedicated bot account instead, create it now and set:
 
 ```bash
-ai-issue login
+   export AI_ISSUE_PUBLISHER=your-bot-account
 ```
 
-The command will:
+2. **Log in as that account.**
+
+```bash
+   ai-issue login
+```
+
+This will:
 
 - open the GitHub device login page
 - show you an 8-digit code to enter
-- save the resulting token locally after authorization
+- save the resulting token locally after you authorize as the account from step 1
 
 The token is stored at `os.UserConfigDir()/ai-issue/token`:
 
@@ -61,13 +86,38 @@ The token is stored at `os.UserConfigDir()/ai-issue/token`:
 | Linux   | `~/.config/ai-issue/token`                     |
 | Windows | `%AppData%\ai-issue\token`                     |
 
-Optional:
+### Per-organization setup
 
-```bash
-export AI_ISSUE_PUBLISHER=replworks-bot
+Repeat both steps for **every** organization or repository you want to publish to — missing either one will cause it to fail:
+
+1. **Install the GitHub App:**
+   https://github.com/apps/ai-issue/installations/new
+
+   You can install it on all repositories or select specific ones.
+
+2. **Give the publishing account write access.** The account from step 1 of one-time setup needs its own access to the target repo — the app acts _as this account_, so installing the app alone is not enough.
+   Either:
+   - add it as an organization member with write access, or
+   - add it as an outside collaborator on the specific repo
+
+   If the organization enforces SSO, also authorize the account for SSO access; if app installation requires admin approval, complete that too.
+
+Why both are required:
+
+```mermaid
+flowchart LR
+    subgraph Org["Target Organization"]
+        A[GitHub App installed?]
+        B[Bot account has repo access?]
+    end
+    A -->|No| F1[❌ Fails:<br/>app has no access]
+    B -->|No| F2[❌ Fails:<br/>account has no access]
+    A -->|Yes| C{Both yes?}
+    B -->|Yes| C
+    C -->|Yes| S[✅ ai-issue works]
 ```
 
-The GitHub App must be installed on the repository or organization you want to publish to.
+See [Troubleshooting](#troubleshooting) if you hit `Resource not accessible by app token` after completing these steps.
 
 ---
 
@@ -138,21 +188,8 @@ Publishing is always an explicit human decision.
 
 ### Dedicated AI Identity
 
-Issues are created under a dedicated AI identity.
-
-By default:
-
-```text
-@ai-backlog-bot
-```
-
-Override locally:
-
-```bash
-export AI_ISSUE_PUBLISHER=replworks-bot
-```
-
-This makes AI-generated issues immediately identifiable while preserving human accountability.
+Issues are created under a dedicated AI identity rather than your personal account, so AI-generated issues are immediately identifiable while preserving human accountability for what actually gets published.
+See [Configuration](#configuration) for how this identity is set up.
 
 ---
 
@@ -174,10 +211,12 @@ Copy AI-generated markdown before running the command.
 
 ### Resource not accessible by app token
 
-Verify:
+This almost always means one of the two steps in
+[Per-organization setup](#per-organization-setup) was missed. Verify:
 
 - The GitHub App is installed on the target repository or organization
-- `Issues: Read and write` permission is granted
+- The publishing account is a member (or outside collaborator) of that repository/organization with write access
+- `Issues: Read and write` permission is granted to the app
 - You completed `ai-issue login` after installing the app
 - Organization approval or SSO authorization is complete, if required
 
