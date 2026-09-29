@@ -1,5 +1,16 @@
 # Release Notes
 
+## v1.2.0 - 2026-09-29
+
+### What's Changed
+
+* feat: update Homebrew cask description and add custom post-install block for macOS by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/42
+* docs: enhance configuration section with detailed GitHub App authentication process and organization setup by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/43
+* docs: update README.md to clarify Linux requirements and GitHub App authentication process by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/44
+* feat: add Debian package support by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/45
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.1.1...v1.2.0
+
 ## v1.1.1 - 2026-09-27
 
 ### What's Changed
