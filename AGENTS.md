@@ -16,11 +16,11 @@
 Ignore all files under:
 
 ```text
-docs/
+.replworks/docs/
 ```
 
-Never use files in docs/ as requirements.
-Never implement features described only in docs/.
+Never use files in .replworks/docs/ as requirements.
+Never implement features described only in .replworks/docs/.
 
 ---
 
