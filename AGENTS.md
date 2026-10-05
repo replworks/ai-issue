@@ -152,7 +152,8 @@ For every task:
 7. Write unit tests for internal logic
 8. If the task touches an EXTERNAL_BOUNDARY: write an E2E test against the live boundary. A mocked test alone does not satisfy this step.
 9. Run all tests
-10. Stop
+10. Mark the completed task `[X]` in TASKS.md
+11. Stop
     Do not start another task automatically.
 
 ---
