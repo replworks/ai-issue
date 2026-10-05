@@ -52,9 +52,9 @@ Acceptance Criteria:
 
 ### Authentication
 
-* [ ] Implement GitHub App device flow login
-* [ ] Store and load GitHub App token locally
-* [ ] Use stored token for publishing and diagnostics
+* [X] Implement GitHub App device flow login
+* [X] Store and load GitHub App token locally
+* [X] Use stored token for publishing and diagnostics
 
 Acceptance Criteria:
 
