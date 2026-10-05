@@ -1,4 +1,4 @@
-# FRAMEWORK.md
+# TECH_STACK.md
 
 # Go CLI Framework
 
@@ -8,9 +8,7 @@ This document defines implementation constraints.
 
 PRODUCT_SPEC.md defines product requirements.
 
-ARCHITECTURE.md defines system structure.
-
-FRAMEWORK.md defines implementation rules.
+TECH_STACK.md defines implementation rules.
 
 All implementation decisions must follow this document.
 
@@ -53,11 +51,11 @@ Single Binary CLI
 
 Requirements:
 
-* standalone executable
-* no backend service
-* no database
-* no web server
-* no daemon process
+- standalone executable
+- no backend service
+- no database
+- no web server
+- no daemon process
 
 ---
 
@@ -99,9 +97,9 @@ Use environment variables for secrets.
 
 Never:
 
-* hardcode secrets
-* commit secrets
-* store secrets in repository files
+- hardcode secrets
+- commit secrets
+- store secrets in repository files
 
 GitHub App device flow tokens must be stored locally with restricted file permissions.
 
@@ -211,9 +209,9 @@ Logs must assist troubleshooting.
 
 Do not log:
 
-* secrets
-* tokens
-* credentials
+- secrets
+- tokens
+- credentials
 
 ---
 
@@ -227,15 +225,15 @@ Go standard testing package
 
 Requirements:
 
-* unit tests for business logic
-* deterministic tests
-* isolated tests
+- unit tests for business logic
+- deterministic tests
+- isolated tests
 
 Tests must not require:
 
-* network access
-* external services
-* manual interaction
+- network access
+- external services
+- manual interaction
 
 External dependencies should be mocked.
 
