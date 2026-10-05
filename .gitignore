@@ -46,7 +46,7 @@ Icon_
 # Project Specific Security Settings (Important!)
 # ==========================================
 # Exclude local configuration and secrets used for testing
-# (Enforces FRAMEWORK.md rule: Secrets are not stored in source code)
+# (Enforces TASK_STACK.md rule: Secrets are not stored in source code)
 config.yaml
 config.toml
 .env

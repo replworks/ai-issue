@@ -10,7 +10,7 @@ PRODUCT_SPEC.md defines product requirements.
 
 ARCHITECTURE.md defines how the product operates internally.
 
-FRAMEWORK.md defines implementation constraints.
+TECH_STACK.md defines implementation constraints.
 
 This document must remain technology-agnostic.
 
@@ -68,11 +68,11 @@ Any architecture that causes Author and Publisher to become the same conceptual 
 
 The architecture must:
 
-* preserve AI authorship
-* preserve publisher traceability
-* minimize publication effort
-* prevent loss of AI-generated work
-* support repository-local operation
+- preserve AI authorship
+- preserve publisher traceability
+- minimize publication effort
+- prevent loss of AI-generated work
+- support repository-local operation
 
 ---
 
@@ -102,8 +102,8 @@ Each stage has a single responsibility.
 
 Responsibilities:
 
-* obtain issue content
-* provide content for processing
+- obtain issue content
+- provide content for processing
 
 Outputs:
 
@@ -113,9 +113,9 @@ Raw Issue Content
 
 The content source is not responsible for:
 
-* title generation
-* issue creation
-* repository selection
+- title generation
+- issue creation
+- repository selection
 
 ---
 
@@ -123,9 +123,9 @@ The content source is not responsible for:
 
 Responsibilities:
 
-* determine issue title
-* determine issue body
-* validate issue content
+- determine issue title
+- determine issue body
+- validate issue content
 
 Outputs:
 
@@ -149,8 +149,8 @@ Issue Extraction is not responsible for publication.
 
 Responsibilities:
 
-* determine publishing identity
-* provide publication context
+- determine publishing identity
+- provide publication context
 
 Outputs:
 
@@ -166,7 +166,7 @@ Publisher Resolution is not responsible for issue authorship.
 
 Responsibilities:
 
-* determine target repository
+- determine target repository
 
 Outputs:
 
@@ -182,10 +182,10 @@ Repository Resolution must occur before publication.
 
 Responsibilities:
 
-* initiate device flow login
-* obtain user access token
-* persist token locally
-* load token for publishing and diagnostics
+- initiate device flow login
+- obtain user access token
+- persist token locally
+- load token for publishing and diagnostics
 
 Outputs:
 
@@ -201,9 +201,9 @@ Authentication Resolution is not responsible for issue creation or repository se
 
 Responsibilities:
 
-* combine issue draft
-* combine publisher information
-* construct final issue payload
+- combine issue draft
+- combine publisher information
+- construct final issue payload
 
 Outputs:
 
@@ -219,8 +219,8 @@ Issue Construction is responsible for preserving authorship and publisher tracea
 
 Responsibilities:
 
-* display publication result before publication
-* allow publication approval
+- display publication result before publication
+- allow publication approval
 
 Outputs:
 
@@ -236,9 +236,9 @@ Issue creation must not occur before approval.
 
 Responsibilities:
 
-* create issue
-* return issue identifier
-* return issue URL
+- create issue
+- return issue identifier
+- return issue URL
 
 Outputs:
 
@@ -408,13 +408,13 @@ No partial publication is allowed.
 
 This architecture does not support:
 
-* automatic issue generation
-* automatic issue publication
-* pull request generation
-* commit generation
-* project management workflows
-* issue prioritization
-* issue analytics
+- automatic issue generation
+- automatic issue publication
+- pull request generation
+- commit generation
+- project management workflows
+- issue prioritization
+- issue analytics
 
 ---
 

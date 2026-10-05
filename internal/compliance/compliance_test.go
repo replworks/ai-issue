@@ -23,10 +23,10 @@ func TestFrameworkCompliance(t *testing.T) {
 
 func TestArchitectureCompliance(t *testing.T) {
 	root := repoRoot(t)
-	assertContains(t, root, "PRODUCT_SPEC.md", "The first heading at the top of the markdown becomes the issue title.")
-	assertContains(t, root, "ARCHITECTURE.md", "Author != Publisher")
-	assertContains(t, root, "FRAMEWORK.md", "AST-based parsing")
-	assertContains(t, root, "FRAMEWORK.md", "Single Binary CLI")
+	assertContains(t, root, ".replworks/PRODUCT_SPEC.md", "The first heading at the top of the markdown becomes the issue title.")
+	assertContains(t, root, ".replworks/ARCHITECTURE.md", "Author != Publisher")
+	assertContains(t, root, ".replworks/TECH_STACK.md", "AST-based parsing")
+	assertContains(t, root, ".replworks/TECH_STACK.md", "Single Binary CLI")
 }
 
 func repoRoot(t *testing.T) string {
