@@ -158,6 +158,7 @@ Acceptance Criteria:
 * [x] Fix Title Extraction for Inline Code in Markdown Headings.
 * [x] Make Publisher Identity Configurable.
 * [x] Add `--dry-run` Mode.
+* [x] Validate Write permission in `diagnose` command (#50).
 
 ---
 

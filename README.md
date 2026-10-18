@@ -253,6 +253,18 @@ This almost always means one of the two steps in
 - You completed `ai-issue login` after installing the app
 - Organization approval or SSO authorization is complete, if required
 
+### Diagnose passes but publishing fails with label permission error
+
+Read access is not enough. `ai-issue diagnose` checks that the token account
+has Write (`push`) permission on the target repository. If the account only
+has read (`pull`) access, diagnose reports `❌ Repository access` with a hint
+like `account X needs Write permission on owner/repo`.
+
+The same shortage can surface during publishing as
+`You do not have permission to create labels on this repository.` The error
+includes the account and repository. Fix it by granting that account Write
+access to the target repository, then run `ai-issue diagnose` again.
+
 ### Need more details?
 
 ```bash

@@ -189,11 +189,69 @@ func (c *Client) CreateIssue(repo, title, body string, labels []string) (string,
 	responseBody, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("GitHub issue publication failed\nRepository: %s\nStatus: %s\nReason:\n%s", repo, resp.Status, githubErrorMessage(responseBody))
+		msg := githubErrorMessage(responseBody)
+		hint := ""
+		if resp.StatusCode == http.StatusForbidden && strings.Contains(strings.ToLower(msg), "label") {
+			login := ""
+			if c != nil {
+				if l, err := c.GetAuthenticatedLogin(); err == nil {
+					login = l
+				}
+			}
+			if login != "" {
+				hint = fmt.Sprintf("\nAccount: %s\nRepository: %s\nHint: account %s needs Write permission on %s to create labels.", login, repo, login, repo)
+			} else {
+				hint = fmt.Sprintf("\nRepository: %s\nHint: the publishing account needs Write permission on %s to create labels.", repo, repo)
+			}
+		}
+		return "", fmt.Errorf("GitHub issue publication failed\nRepository: %s\nStatus: %s\nReason:\n%s%s", repo, resp.Status, msg, hint)
 	}
 
 	// In real implementation, parse response for HTML URL
 	return fmt.Sprintf("https://github.com/%s/issues", repo), nil
+}
+
+func (c *Client) GetAuthenticatedLogin() (string, error) {
+	if c == nil {
+		return "", fmt.Errorf("GitHub client is not initialized")
+	}
+	if c.HTTPClient == nil {
+		c.HTTPClient = &http.Client{}
+	}
+	if c.BaseURL == "" {
+		c.BaseURL = "https://api.github.com"
+	}
+
+	url := fmt.Sprintf("%s/user", c.BaseURL)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to create authenticated user request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+c.Token)
+	req.Header.Set("Accept", "application/vnd.github+json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to fetch authenticated user: %w", err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to fetch authenticated user\nStatus: %s\nReason:\n%s", resp.Status, githubErrorMessage(body))
+	}
+
+	var decoded struct {
+		Login string `json:"login"`
+	}
+	if err := json.Unmarshal(body, &decoded); err != nil {
+		return "", fmt.Errorf("failed to decode authenticated user response: %w", err)
+	}
+	decoded.Login = strings.TrimSpace(decoded.Login)
+	if decoded.Login == "" {
+		return "", fmt.Errorf("authenticated user login could not be determined")
+	}
+	return decoded.Login, nil
 }
 
 func (c *Client) CheckRepositoryAccess(repo string) error {
@@ -226,10 +284,37 @@ func (c *Client) CheckRepositoryAccess(repo string) error {
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
 		return &RepositoryAccessError{
-			Status:  http.StatusText(resp.StatusCode),
-			Message: githubErrorMessage(body),
-			Headers: resp.Header.Clone(),
-			RawBody: strings.TrimSpace(string(body)),
+			Repository: repo,
+			Status:     http.StatusText(resp.StatusCode),
+			Message:    githubErrorMessage(body),
+			Headers:    resp.Header.Clone(),
+			RawBody:    strings.TrimSpace(string(body)),
+		}
+	}
+
+	var decoded struct {
+		Permissions *struct {
+			Pull     bool  `json:"pull"`
+			Push     bool  `json:"push"`
+			Admin    bool  `json:"admin"`
+			Maintain *bool `json:"maintain"`
+			Triage   *bool `json:"triage"`
+		} `json:"permissions"`
+	}
+	if err := json.Unmarshal(body, &decoded); err != nil {
+		return fmt.Errorf("failed to decode repository access response: %w", err)
+	}
+
+	if decoded.Permissions != nil && !decoded.Permissions.Push {
+		return &RepositoryAccessError{
+			Repository: repo,
+			Status:     http.StatusText(resp.StatusCode),
+			Message:    "Write permission is required to publish issues and labels.",
+			Headers:    resp.Header.Clone(),
+			RawBody:    strings.TrimSpace(string(body)),
+			Pull:       decoded.Permissions.Pull,
+			Push:       false,
+			HasPerms:   true,
 		}
 	}
 
@@ -237,10 +322,15 @@ func (c *Client) CheckRepositoryAccess(repo string) error {
 }
 
 type RepositoryAccessError struct {
-	Status  string
-	Message string
-	Headers http.Header
-	RawBody string
+	Repository string
+	Login      string
+	Status     string
+	Message    string
+	Headers    http.Header
+	RawBody    string
+	Pull       bool
+	Push       bool
+	HasPerms   bool
 }
 
 func (e *RepositoryAccessError) Error() string {
