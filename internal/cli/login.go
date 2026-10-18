@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
@@ -23,6 +24,8 @@ var loginCmd = &cobra.Command{
 	},
 }
 
+var clipboardWriteAll = clipboard.WriteAll
+
 func runLogin(ctx context.Context) error {
 	clientID := config.GitHubAppClientID()
 	device, err := github.RequestDeviceCode(clientID)
@@ -33,6 +36,11 @@ func runLogin(ctx context.Context) error {
 	fmt.Println("Open this URL in your browser:")
 	fmt.Println(device.VerificationURI)
 	fmt.Printf("Enter this code: %s\n", device.UserCode)
+	if strings.TrimSpace(device.UserCode) != "" {
+		if err := clipboardWriteAll(device.UserCode); err == nil {
+			fmt.Println("Code copied to clipboard. Paste it on the GitHub page.")
+		}
+	}
 	if err := openBrowser(device.VerificationURI); err == nil {
 		fmt.Println("Browser opened automatically.")
 	} else {

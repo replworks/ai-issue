@@ -35,6 +35,14 @@ func TestRunLoginSavesToken(t *testing.T) {
 
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 
+	oldClipboard := clipboardWriteAll
+	var gotCode string
+	clipboardWriteAll = func(text string) error {
+		gotCode = text
+		return nil
+	}
+	defer func() { clipboardWriteAll = oldClipboard }()
+
 	if err := runLogin(t.Context()); err != nil {
 		t.Fatalf("runLogin error: %v", err)
 	}
@@ -52,5 +60,8 @@ func TestRunLoginSavesToken(t *testing.T) {
 	}
 	if token != "token-123" {
 		t.Fatalf("token = %q, want %q", token, "token-123")
+	}
+	if gotCode != "WDJB-MJHT" {
+		t.Fatalf("clipboard code = %q, want %q", gotCode, "WDJB-MJHT")
 	}
 }
