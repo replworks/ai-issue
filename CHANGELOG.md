@@ -1,5 +1,21 @@
 # Release Notes
 
+## v1.2.1 - 2026-10-18
+
+### What's Changed
+
+* chore: update documentation references to align with the new REPLWorks v2 structure by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/46
+* docs: specify the directory for ignored files in AGENTS.md by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/47
+* feat: mark GitHub App authentication tasks as complete by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/48
+* feat: update task execution steps to mark completed tasks in TASKS.md by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/49
+* Check Write permission in diagnose (fixes #50) by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/51
+
+### New Contributors
+
+* [@replworks-bot](https://github.com/replworks-bot) made their first contribution in https://github.com/replworks/ai-issue/pull/51
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.2.0...v1.2.1
+
 ## v1.2.0 - 2026-09-29
 
 ### What's Changed
