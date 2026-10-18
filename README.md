@@ -130,6 +130,12 @@ Repeat both steps for **every** organization or repository you want to publish t
    - add it as an organization member with write access, or
    - add it as an outside collaborator on the specific repo
 
+   Private repositories require this step explicitly: installing the app alone
+   does not grant the publishing account any visibility. Invite the account
+   from the repository page (`Settings → Collaborators → Add people`) with
+   `Write` role, have the account accept the invitation, then run
+   `ai-issue diagnose` to confirm `Write OK`.
+
    If the organization enforces SSO, also authorize the account for SSO access; if app installation requires admin approval, complete that too.
 
 Why both are required:
@@ -264,6 +270,11 @@ The same shortage can surface during publishing as
 `You do not have permission to create labels on this repository.` The error
 includes the account and repository. Fix it by granting that account Write
 access to the target repository, then run `ai-issue diagnose` again.
+
+For private repositories this typically means an explicit collaborator invite:
+`Settings → Collaborators → Add people` with `Write` role, then have the
+account accept the invitation. Installing the app alone does not make a
+private repo visible to the publishing account.
 
 ### Need more details?
 
