@@ -91,7 +91,7 @@ func TestCheckRepositoryAccessSuccess(t *testing.T) {
 		gotAuth = r.Header.Get("Authorization")
 		gotAccept = r.Header.Get("Accept")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"full_name":"company/backend"}`))
+		_, _ = w.Write([]byte(`{"full_name":"company/backend","permissions":{"pull":true,"push":true,"admin":false}}`))
 	}))
 	defer server.Close()
 
