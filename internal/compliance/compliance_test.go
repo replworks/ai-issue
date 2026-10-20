@@ -24,7 +24,7 @@ func TestFrameworkCompliance(t *testing.T) {
 func TestArchitectureCompliance(t *testing.T) {
 	root := repoRoot(t)
 	assertContains(t, root, ".replworks/PRODUCT_SPEC.md", "The first heading at the top of the markdown becomes the issue title.")
-	assertContains(t, root, ".replworks/ARCHITECTURE.md", "Author != Publisher")
+	assertContains(t, root, ".replworks/ARCHITECTURE.md", "AI Source != GitHub Opener")
 	assertContains(t, root, ".replworks/TECH_STACK.md", "AST-based parsing")
 	assertContains(t, root, ".replworks/TECH_STACK.md", "Single Binary CLI")
 }

@@ -2,7 +2,6 @@ package publisher
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
 	"github.com/replworks/ai-issue/internal/domain"
@@ -10,17 +9,13 @@ import (
 
 type Service struct {
 	ghClient *github.Client
-	botName  string
 }
 
-func NewService(ghClient *github.Client, botName string) *Service {
-	return &Service{ghClient: ghClient, botName: botName}
+func NewService(ghClient *github.Client) *Service {
+	return &Service{ghClient: ghClient}
 }
 
 func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
-	if err := ValidatePublisher(s.botName); err != nil {
-		return "", err
-	}
 	if issue == nil {
 		return "", fmt.Errorf("publishable issue is required")
 	}
@@ -31,11 +26,4 @@ func (s *Service) Publish(issue *domain.PublishableIssue) (string, error) {
 	}
 
 	return url, nil
-}
-
-func ValidatePublisher(username string) error {
-	if strings.TrimSpace(strings.TrimPrefix(username, "@")) == "" {
-		return fmt.Errorf("publisher information is required")
-	}
-	return nil
 }

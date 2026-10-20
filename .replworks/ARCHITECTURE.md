@@ -27,18 +27,18 @@ Do not introduce library-specific behavior.
 The system exists to preserve a distinction between:
 
 ```text
-Content Creation
+AI Content Source
 ```
 
 and
 
 ```text
-Content Publication
+GitHub Issue Opener
 ```
 
 These are independent responsibilities.
 
-The creator of content and the publisher of content must not be treated as the same entity.
+The conversational AI source and the GitHub account that opens the issue must not be treated as the same entity.
 
 ---
 
@@ -47,20 +47,20 @@ The creator of content and the publisher of content must not be treated as the s
 The following condition must always hold:
 
 ```text
-Author != Publisher
+AI Source != GitHub Opener
 ```
 
 Definitions:
 
 ```text
-Author
-    Entity that generated issue content.
+AI Source
+    Conversational AI selected by the user as the source of issue content.
 
-Publisher
-    Human that decided to publish issue content.
+GitHub Opener
+    GitHub account authenticated through the application and recorded by GitHub as the issue creator.
 ```
 
-Any architecture that causes Author and Publisher to become the same conceptual entity is invalid.
+Any architecture that causes the AI source and GitHub opener to become the same conceptual entity is invalid.
 
 ---
 
@@ -69,7 +69,7 @@ Any architecture that causes Author and Publisher to become the same conceptual 
 The architecture must:
 
 - preserve AI authorship
-- preserve publisher traceability
+- preserve AI source traceability
 - minimize publication effort
 - prevent loss of AI-generated work
 - support repository-local operation
@@ -145,20 +145,20 @@ Issue Extraction is not responsible for publication.
 
 ---
 
-# Publisher Resolution
+# AI Source Selection
 
 Responsibilities:
 
-- determine publishing identity
-- provide publication context
+- determine the conversational AI source
+- provide AI source context for issue construction
 
 Outputs:
 
 ```text
-Publisher
+AI Source
 ```
 
-Publisher Resolution is not responsible for issue authorship.
+AI Source Selection is not responsible for GitHub authentication or issue creation.
 
 ---
 
@@ -202,7 +202,7 @@ Authentication Resolution is not responsible for issue creation or repository se
 Responsibilities:
 
 - combine issue draft
-- combine publisher information
+- append the selected AI source to the issue body
 - construct final issue payload
 
 Outputs:
@@ -211,7 +211,7 @@ Outputs:
 Publishable Issue
 ```
 
-Issue Construction is responsible for preserving authorship and publisher traceability.
+Issue Construction is responsible for preserving AI source traceability. GitHub remains the source of truth for the issue opener.
 
 ---
 
@@ -264,7 +264,7 @@ Does Not Own:
 
 ```text
 Repository
-Publisher
+AI Source
 Issue Creation
 ```
 
@@ -304,18 +304,19 @@ Issue Content
 
 ---
 
-## Publisher Resolution
+## AI Source Selection
 
 Owns:
 
 ```text
-Publisher Identity
+AI Source
 ```
 
 Does Not Own:
 
 ```text
-Issue Authorship
+GitHub Authentication
+Issue Creation
 ```
 
 ---
@@ -368,7 +369,7 @@ Issue publication must occur only after explicit approval.
 
 ## Rule 3
 
-Publisher information must remain available after publication.
+AI source information must remain available in the issue body after publication.
 
 ---
 
@@ -423,7 +424,7 @@ This architecture does not support:
 The following conditions must always remain true:
 
 ```text
-Author != Publisher
+AI Source != GitHub Opener
 ```
 
 ```text
@@ -443,7 +444,7 @@ Issue Publication does not generate Issue Content
 ```
 
 ```text
-Publisher does not become Author
+GitHub Opener does not become AI Source
 ```
 
 Any implementation that violates these invariants is architecturally incorrect.

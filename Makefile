@@ -15,13 +15,13 @@ test:
 vet:
 	go vet ./...
 
-lint: ## runs golangci-lint via go run
-	golangci-lint run ./...
+lint: ## runs the pinned golangci-lint version via go run
+	GOTOOLCHAIN=auto go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.14.0 run ./...
 
 lint-fix: ## automatically fix lint issues where possible
 	golangci-lint run --fix ./...
 
-check: fmt-check vet test
+check: fmt-check vet test lint
 
 build:
 	go build -o ai-issue ./cmd/ai-issue

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
-	"github.com/replworks/ai-issue/internal/config"
+	"github.com/replworks/ai-issue/internal/aisource"
 	"github.com/replworks/ai-issue/internal/construction"
 	"github.com/replworks/ai-issue/internal/extraction"
 	"github.com/replworks/ai-issue/internal/preview"
@@ -36,7 +36,13 @@ func runPublish() error {
 		return extraction.NewError("content", "Clipboard is empty. Copy the AI response first.")
 	}
 
-	// 2. Extract
+	// 2. Select the AI source
+	selectedSource, err := aisource.Select(aiSource, os.Stdin, os.Stdout)
+	if err != nil {
+		return err
+	}
+
+	// 3. Extract
 	draft, err := extraction.ExtractIssue(content)
 	if err != nil {
 		return err
@@ -45,7 +51,7 @@ func runPublish() error {
 		return err
 	}
 
-	// 3. Resolve repo
+	// 4. Resolve repo
 	repo, err := repository.ResolveRepository()
 	if err != nil {
 		return err
@@ -54,20 +60,19 @@ func runPublish() error {
 		return err
 	}
 
-	publisherName := config.PublisherIdentity()
-	publishable, err := construction.BuildPublishableIssue(draft, repo, publisherName)
+	publishable, err := construction.BuildPublishableIssue(draft, repo, selectedSource)
 	if err != nil {
 		return err
 	}
 
-	// 4. Preview
+	// 5. Preview
 	if dryRun {
-		preview.ShowDryRunPreview(repo, publishable.Title, publishable.Body, publisherName)
+		preview.ShowDryRunPreview(repo, publishable.Title, publishable.Body)
 		return nil
 	}
-	preview.ShowPreview(repo, publishable.Title, publishable.Body, publisherName)
+	preview.ShowPreview(repo, publishable.Title, publishable.Body)
 
-	// 5. Confirm
+	// 6. Confirm
 	reader := bufio.NewReader(os.Stdin)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(strings.ToLower(input))
@@ -77,16 +82,13 @@ func runPublish() error {
 		return nil
 	}
 
-	// 6. Publish
+	// 7. Publish
 	ghClient, err := github.NewClient()
 	if err != nil {
 		return err
 	}
 
-	pubService := publisher.NewService(ghClient, publisherName)
-	if err := publisher.ValidatePublisher(publisherName); err != nil {
-		return err
-	}
+	pubService := publisher.NewService(ghClient)
 
 	url, err := pubService.Publish(publishable)
 	if err != nil {
