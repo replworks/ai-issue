@@ -1,5 +1,13 @@
 # Release Notes
 
+## v1.3.0 - 2026-10-20
+
+### What's Changed
+
+* feat: record conversational AI source by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/54
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.2.1...v1.3.0
+
 ## v1.2.1 - 2026-10-18
 
 ### What's Changed
