@@ -27,6 +27,23 @@ Acceptance Criteria:
 
 ---
 
+### AI Source Attribution
+
+* [X] Support conversational AI source selection for ChatGPT, Claude, Muse, Grok, and DeepSeek
+* [X] Support interactive AI source selection during publication
+* [X] Support `--ai` source selection
+* [X] Append the selected AI source to the issue body as plain text
+* [X] Remove publisher metadata from issue construction and preview
+
+Acceptance Criteria:
+
+* Publication asks for an AI source when `--ai` is not provided
+* `--ai` accepts each supported source without prompting
+* The issue body contains exactly one `AI Source: <name>` metadata line
+* The issue does not contain publisher metadata
+
+---
+
 ### Repository Resolution
 
 * [X] Determine target repository
@@ -39,14 +56,14 @@ Acceptance Criteria:
 
 ---
 
-### Publisher Resolution
+### GitHub Account Resolution
 
-* [X] Determine publishing user
-* [X] Validate resolved publisher
+* [X] Determine GitHub account through authentication
+* [X] Validate authenticated GitHub account
 
 Acceptance Criteria:
 
-* Publisher information is available before publication
+* The authenticated GitHub account is available before publication
 
 ---
 
@@ -67,14 +84,14 @@ Acceptance Criteria:
 ### Issue Construction
 
 * [X] Construct publishable issue
-* [X] Preserve publisher traceability
+* [X] Preserve GitHub opener through GitHub authentication
 * [X] Validate final publishable issue payload
 
 Acceptance Criteria:
 
 * Final issue contains title
 * Final issue contains body
-* Publisher information is preserved
+* AI source information is preserved in the issue body
 
 ---
 
@@ -156,7 +173,7 @@ Acceptance Criteria:
 * [x] Implement GitHub repository access validation in the `diagnose` command.
 * [x] Add `--version` Support #19.
 * [x] Fix Title Extraction for Inline Code in Markdown Headings.
-* [x] Make Publisher Identity Configurable.
+* [x] Remove configurable publisher metadata in favor of GitHub opener identity.
 * [x] Add `--dry-run` Mode.
 * [x] Validate Write permission in `diagnose` command (#50).
 
@@ -188,7 +205,7 @@ Acceptance Criteria:
 
 ### Multi-Identity
 
-* [ ] Support multiple AI authors
+* [X] Support multiple AI authors
 * [ ] Support organization-wide configuration
 
 ---

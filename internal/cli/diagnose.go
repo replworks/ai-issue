@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
-	"github.com/replworks/ai-issue/internal/config"
-	"github.com/replworks/ai-issue/internal/publisher"
 	"github.com/replworks/ai-issue/internal/repository"
 )
 
@@ -36,15 +34,6 @@ var diagnoseCmd = &cobra.Command{
 			fmt.Printf("✅ Repository validation: %s\n", repo)
 		} else {
 			fmt.Printf("❌ Repository validation: %v\n", err)
-			failed = true
-		}
-
-		// Publisher check
-		publisherName := config.PublisherIdentity()
-		if err := publisher.ValidatePublisher(publisherName); err == nil {
-			fmt.Printf("✅ Publisher validation: @%s\n", strings.TrimPrefix(publisherName, "@"))
-		} else {
-			fmt.Printf("❌ Publisher validation: %v\n", err)
 			failed = true
 		}
 

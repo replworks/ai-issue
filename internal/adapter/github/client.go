@@ -207,8 +207,16 @@ func (c *Client) CreateIssue(repo, title, body string, labels []string) (string,
 		return "", fmt.Errorf("GitHub issue publication failed\nRepository: %s\nStatus: %s\nReason:\n%s%s", repo, resp.Status, msg, hint)
 	}
 
-	// In real implementation, parse response for HTML URL
-	return fmt.Sprintf("https://github.com/%s/issues", repo), nil
+	var created struct {
+		HTMLURL string `json:"html_url"`
+	}
+	if err := json.Unmarshal(responseBody, &created); err != nil {
+		return "", fmt.Errorf("failed to decode created GitHub issue: %w", err)
+	}
+	if strings.TrimSpace(created.HTMLURL) == "" {
+		return "", fmt.Errorf("GitHub issue response did not include an issue URL")
+	}
+	return created.HTMLURL, nil
 }
 
 func (c *Client) GetAuthenticatedLogin() (string, error) {

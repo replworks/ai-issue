@@ -6,18 +6,20 @@ import (
 	"github.com/replworks/ai-issue/internal/domain"
 )
 
-func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherName string) (*domain.PublishableIssue, error) {
-	publisherName = strings.TrimSpace(strings.TrimPrefix(publisherName, "@"))
+func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, aiSource string) (*domain.PublishableIssue, error) {
+	aiSource = strings.TrimSpace(aiSource)
+	if aiSource == "" {
+		return nil, domainError("AI source could not be determined.")
+	}
 	issue := &domain.PublishableIssue{
 		Title:      "",
 		Body:       "",
 		Repository: strings.TrimSpace(repositoryName),
-		Publisher:  publisherName,
 	}
 
 	if draft != nil {
 		issue.Title = strings.TrimSpace(draft.Title)
-		issue.Body = strings.TrimSpace(draft.Body)
+		issue.Body = appendAISource(draft.Body, aiSource)
 	}
 
 	if err := ValidatePublishableIssue(issue); err != nil {
@@ -25,6 +27,19 @@ func BuildPublishableIssue(draft *domain.IssueDraft, repositoryName, publisherNa
 	}
 
 	return issue, nil
+}
+
+func appendAISource(body, aiSource string) string {
+	lines := strings.Split(strings.TrimSpace(body), "\n")
+	filtered := make([]string, 0, len(lines))
+	for _, line := range lines {
+		if strings.HasPrefix(strings.TrimSpace(line), "AI Source:") {
+			continue
+		}
+		filtered = append(filtered, line)
+	}
+	cleanBody := strings.TrimSpace(strings.Join(filtered, "\n"))
+	return cleanBody + "\n\nAI Source: " + aiSource
 }
 
 func ValidatePublishableIssue(issue *domain.PublishableIssue) error {
@@ -39,9 +54,6 @@ func ValidatePublishableIssue(issue *domain.PublishableIssue) error {
 	}
 	if strings.TrimSpace(issue.Repository) == "" {
 		return domainError("repository could not be determined.")
-	}
-	if strings.TrimSpace(issue.Publisher) == "" {
-		return domainError("publisher could not be determined.")
 	}
 	return nil
 }

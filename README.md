@@ -11,7 +11,7 @@
 >
 > Turn AI conversations into GitHub Issues with one command.
 
-AI Issue Publisher converts AI-generated markdown from ChatGPT, Claude, Cursor, and other assistants into GitHub Issues.
+AI Issue Publisher converts AI-generated markdown from ChatGPT, Claude, Muse, Grok, and DeepSeek into GitHub Issues.
 
 The AI writes the idea. Humans decide whether it becomes work.
 
@@ -78,7 +78,7 @@ AI Issue Publisher instead authenticates with a **GitHub App user access token v
 
 - You log in once with the GitHub account you want to use for publishing.
 - To add a new organization, install the app there and give that same account access — no new token or per-organization PAT approval is required.
-- The GitHub account remains the Issue author; `ai-issue` also records the configured publisher identity in the Issue body.
+- The GitHub account remains the Issue opener; `ai-issue` records the selected AI source in the Issue body.
 
 The trade-off: setup has two moving parts (the app installation and the account's access) instead of one PAT. In exchange, adding a new organization is a short checklist instead of a new credential to manage.
 
@@ -87,14 +87,7 @@ The trade-off: setup has two moving parts (the app installation and the account'
 1. **Choose the GitHub account that will authorize publishing.**
    This can be your normal GitHub account. A separate bot account is optional,
    not required. The account used during device flow authorization is the
-   account GitHub records as the Issue author.
-
-   The publisher label included in the Issue body defaults to `ai-backlog-bot`.
-   To customize that label, set:
-
-```bash
-   export AI_ISSUE_PUBLISHER=your-bot-account
-```
+   account GitHub records as the Issue opener.
 
 2. **Log in with that account.**
 
@@ -212,23 +205,31 @@ https://github.com/owner/repository/issues/42
 
 ## Core Philosophy
 
-### Author ≠ Publisher
+### AI Source ≠ GitHub Opener
 
 AI Issue Publisher is built around a simple principle:
 
-- AI authors the content.
+- The selected AI source provides the content.
 - Humans review the content.
 - Humans decide whether to publish it.
+- GitHub records the authenticated account as the Issue opener.
 
 Publishing is always an explicit human decision.
 
-### Publisher identity
+### AI source
 
-The GitHub account authorized through device flow is the actual Issue author. The
-configured publisher identity, which defaults to `ai-backlog-bot`, is metadata
-written into the Issue body so the publishing decision remains traceable.
-It does not change the GitHub author account.
-See [Configuration](#configuration) for how this label is configured.
+Before preview, `ai-issue` asks which conversational AI produced the content.
+The selected source is recorded in the Issue body as plain text:
+
+```text
+AI Source: Claude
+```
+
+The same selection can be supplied non-interactively:
+
+```bash
+ai-issue --ai claude
+```
 
 ---
 

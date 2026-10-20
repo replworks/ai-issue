@@ -12,7 +12,7 @@ func TestBuildPublishableIssue(t *testing.T) {
 		Body:  "Current logs do not contain timestamps.",
 	}
 
-	issue, err := BuildPublishableIssue(draft, "company/backend", "ai-backlog-bot")
+	issue, err := BuildPublishableIssue(draft, "company/backend", "Claude")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -25,29 +25,8 @@ func TestBuildPublishableIssue(t *testing.T) {
 	if issue.Repository != "company/backend" {
 		t.Fatalf("repository = %q, want %q", issue.Repository, "company/backend")
 	}
-	if issue.Publisher != "ai-backlog-bot" {
-		t.Fatalf("publisher = %q, want %q", issue.Publisher, "ai-backlog-bot")
-	}
-	if issue.Body != draft.Body {
-		t.Fatalf("body = %q, want %q", issue.Body, draft.Body)
-	}
-}
-
-func TestBuildPublishableIssueTrimsPublisherPrefix(t *testing.T) {
-	draft := &domain.IssueDraft{
-		Title: "Add timestamps to logging",
-		Body:  "Current logs do not contain timestamps.",
-	}
-
-	issue, err := BuildPublishableIssue(draft, "company/backend", "@project-ai-bot")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if issue.Publisher != "project-ai-bot" {
-		t.Fatalf("publisher = %q, want %q", issue.Publisher, "project-ai-bot")
-	}
-	if issue.Body != draft.Body {
-		t.Fatalf("body = %q, want %q", issue.Body, draft.Body)
+	if issue.Body != draft.Body+"\n\nAI Source: Claude" {
+		t.Fatalf("body = %q, want AI source metadata", issue.Body)
 	}
 }
 
@@ -63,7 +42,6 @@ func TestValidatePublishableIssue(t *testing.T) {
 				Title:      "Issue",
 				Body:       "Body",
 				Repository: "company/backend",
-				Publisher:  "ai-backlog-bot",
 			},
 			wantErr: false,
 		},
@@ -73,7 +51,6 @@ func TestValidatePublishableIssue(t *testing.T) {
 			issue: &domain.PublishableIssue{
 				Body:       "Body",
 				Repository: "company/backend",
-				Publisher:  "ai-backlog-bot",
 			},
 			wantErr: true,
 		},
@@ -82,16 +59,14 @@ func TestValidatePublishableIssue(t *testing.T) {
 			issue: &domain.PublishableIssue{
 				Title:      "Issue",
 				Repository: "company/backend",
-				Publisher:  "ai-backlog-bot",
 			},
 			wantErr: true,
 		},
 		{
 			name: "missing repository",
 			issue: &domain.PublishableIssue{
-				Title:     "Issue",
-				Body:      "Body",
-				Publisher: "ai-backlog-bot",
+				Title: "Issue",
+				Body:  "Body",
 			},
 			wantErr: true,
 		},
@@ -107,5 +82,30 @@ func TestValidatePublishableIssue(t *testing.T) {
 				t.Fatalf("unexpected error: %v", err)
 			}
 		})
+	}
+}
+
+func TestBuildPublishableIssueRequiresAISource(t *testing.T) {
+	_, err := BuildPublishableIssue(
+		&domain.IssueDraft{Title: "Issue", Body: "Body"},
+		"company/backend",
+		"",
+	)
+	if err == nil {
+		t.Fatal("expected missing AI source error")
+	}
+}
+
+func TestBuildPublishableIssueReplacesExistingAISourceMetadata(t *testing.T) {
+	issue, err := BuildPublishableIssue(
+		&domain.IssueDraft{Title: "Issue", Body: "Body\n\nAI Source: Old"},
+		"company/backend",
+		"Claude",
+	)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if issue.Body != "Body\n\nAI Source: Claude" {
+		t.Fatalf("body = %q, want one current AI source line", issue.Body)
 	}
 }

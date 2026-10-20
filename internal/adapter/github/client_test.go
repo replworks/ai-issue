@@ -41,8 +41,8 @@ func TestCreateIssueSuccess(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if url != "https://github.com/company/backend/issues" {
-		t.Fatalf("url = %q, want %q", url, "https://github.com/company/backend/issues")
+	if url != "https://github.com/company/backend/issues/1" {
+		t.Fatalf("url = %q, want %q", url, "https://github.com/company/backend/issues/1")
 	}
 	if gotMethod != http.MethodPost {
 		t.Fatalf("method = %q, want %q", gotMethod, http.MethodPost)

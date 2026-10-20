@@ -29,7 +29,7 @@ These work items are often lost because publishing them to GitHub requires manua
 
 A second problem exists.
 
-When AI-generated content is published manually, GitHub typically presents the publishing human as the issue author.
+When AI-generated content is published manually, GitHub typically presents the publishing human as the issue author. The product must make the conversational AI source visible without pretending that the AI is the GitHub opener.
 
 This creates ambiguity regarding authorship and responsibility.
 
@@ -41,8 +41,8 @@ The product must allow users to quickly publish AI-generated work items to GitHu
 
 The product must preserve the distinction between:
 
-* the creator of the content
-* the publisher of the content
+* the conversational AI source of the content
+* the GitHub account that opens the issue
 
 ---
 
@@ -121,7 +121,7 @@ The product shall determine the target GitHub repository automatically.
 
 ## FR-005
 
-The product shall identify the publishing user.
+The product shall record the selected conversational AI source in the issue body.
 
 ---
 
@@ -195,9 +195,23 @@ The issue body is generated from the remaining markdown content after title extr
 
 ---
 
-## Publisher Rule
+## AI Source Rule
 
-Publisher information must be preserved as part of the generated issue.
+The selected conversational AI source must be preserved as plain text in the generated issue body using this format:
+
+```text
+AI Source: Claude
+```
+
+Supported sources are:
+
+* ChatGPT
+* Claude
+* Muse
+* Grok
+* DeepSeek
+
+The GitHub account that creates the issue is provided by GitHub authentication and must not be duplicated as publisher metadata in the issue body.
 
 ---
 
@@ -218,10 +232,11 @@ The token is stored locally and reused for publishing and diagnostics.
 1. User copies AI-generated markdown.
 2. User executes the publish command.
 3. The product analyzes the content.
-4. The product generates a preview.
-5. The user confirms publication.
-6. The product creates a GitHub Issue.
-7. The product displays the created issue URL.
+4. The product asks the user to select the conversational AI source, unless one was provided as an option.
+5. The product generates a preview.
+6. The user confirms publication.
+7. The product creates the GitHub Issue.
+8. The product displays the created issue URL.
 
 ---
 
@@ -270,7 +285,7 @@ The product is complete when:
 1. A user can publish AI-generated markdown as a GitHub Issue.
 2. The issue is created in the correct repository.
 3. The user can review content before publication.
-4. Publisher information is preserved.
+4. AI source information is preserved in the issue body.
 5. The created issue URL is returned.
 
 ---

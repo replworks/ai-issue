@@ -21,7 +21,9 @@ func TestEndToEndPublicationFlow(t *testing.T) {
 		if err := json.NewDecoder(r.Body).Decode(&gotBody); err != nil {
 			t.Fatalf("failed to decode body: %v", err)
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		_, _ = w.Write([]byte(`{"html_url":"https://github.com/company/backend/issues/1"}`))
 	}))
 	defer server.Close()
 
@@ -36,12 +38,12 @@ func TestEndToEndPublicationFlow(t *testing.T) {
 		Body:  "Current logs do not contain timestamps.",
 	}
 
-	issue, err := construction.BuildPublishableIssue(draft, "company/backend", "ai-backlog-bot")
+	issue, err := construction.BuildPublishableIssue(draft, "company/backend", "Claude")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	svc := NewService(ghClient, "ai-backlog-bot")
+	svc := NewService(ghClient)
 	url, err := svc.Publish(issue)
 	if err != nil {
 		t.Fatalf("unexpected publish error: %v", err)
@@ -49,8 +51,8 @@ func TestEndToEndPublicationFlow(t *testing.T) {
 	if !strings.Contains(url, "company/backend") {
 		t.Fatalf("url = %q, want repository path", url)
 	}
-	if body, _ := gotBody["body"].(string); strings.Contains(body, "AI Generated") || strings.Contains(body, "Publisher:") {
-		t.Fatalf("body = %q, want clean issue body", body)
+	if body, _ := gotBody["body"].(string); !strings.Contains(body, "AI Source: Claude") || strings.Contains(body, "Publisher:") {
+		t.Fatalf("body = %q, want AI source without publisher metadata", body)
 	}
 	labels, _ := gotBody["labels"].([]interface{})
 	if len(labels) != 1 || labels[0] != "ai-generated" {

@@ -8,12 +8,7 @@ import (
 	"strings"
 )
 
-const defaultPublisher = "ai-backlog-bot"
 const defaultGitHubAppClientID = "Iv23lisWVphLHQXlTQql"
-
-func PublisherIdentity() string {
-	return normalizePublisher(os.Getenv("AI_ISSUE_PUBLISHER"))
-}
 
 func GitHubAppClientID() string {
 	if v := strings.TrimSpace(os.Getenv("AI_ISSUE_GITHUB_APP_CLIENT_ID")); v != "" {
@@ -65,12 +60,4 @@ func SaveToken(token string) error {
 		return fmt.Errorf("failed to store GitHub App token: %w", err)
 	}
 	return nil
-}
-
-func normalizePublisher(value string) string {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return defaultPublisher
-	}
-	return strings.TrimPrefix(value, "@")
 }

@@ -5,16 +5,15 @@ import (
 	"strings"
 )
 
-func FormatPreview(repo, title, body, publisher string) string {
-	return FormatPreviewWithOptions(repo, title, body, publisher, true, false)
+func FormatPreview(repo, title, body string) string {
+	return FormatPreviewWithOptions(repo, title, body, true, false)
 }
 
-func FormatPreviewWithOptions(repo, title, body, publisher string, prompt bool, dryRun bool) string {
+func FormatPreviewWithOptions(repo, title, body string, prompt bool, dryRun bool) string {
 	var b strings.Builder
 	b.WriteString("\n=== AI Issue Preview ===\n")
 	fmt.Fprintf(&b, "Repository: %s\n", repo)
 	fmt.Fprintf(&b, "Title: %s\n", title)
-	fmt.Fprintf(&b, "Publisher: @%s\n", strings.TrimPrefix(strings.TrimSpace(publisher), "@"))
 	b.WriteString("\nBody preview:\n")
 	if len(body) > 300 {
 		b.WriteString(body[:300] + "...\n")
@@ -31,10 +30,10 @@ func FormatPreviewWithOptions(repo, title, body, publisher string, prompt bool, 
 	return b.String()
 }
 
-func ShowPreview(repo, title, body, publisher string) {
-	fmt.Print(FormatPreview(repo, title, body, publisher))
+func ShowPreview(repo, title, body string) {
+	fmt.Print(FormatPreview(repo, title, body))
 }
 
-func ShowDryRunPreview(repo, title, body, publisher string) {
-	fmt.Print(FormatPreviewWithOptions(repo, title, body, publisher, false, true))
+func ShowDryRunPreview(repo, title, body string) {
+	fmt.Print(FormatPreviewWithOptions(repo, title, body, false, true))
 }
