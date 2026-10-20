@@ -21,7 +21,7 @@ lint: ## runs golangci-lint via go run
 lint-fix: ## automatically fix lint issues where possible
 	golangci-lint run --fix ./...
 
-check: fmt-check vet test
+check: fmt-check vet test lint
 
 build:
 	go build -o ai-issue ./cmd/ai-issue

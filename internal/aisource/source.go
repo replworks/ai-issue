@@ -39,11 +39,17 @@ func Select(value string, in io.Reader, out io.Writer) (string, error) {
 		return Resolve(value)
 	}
 
-	fmt.Fprintln(out, "Select the AI source:")
-	for i, source := range supportedSources {
-		fmt.Fprintf(out, "%d) %s\n", i+1, source.Name)
+	if _, err := fmt.Fprintln(out, "Select the AI source:"); err != nil {
+		return "", fmt.Errorf("failed to display AI source options: %w", err)
 	}
-	fmt.Fprint(out, "Choice: ")
+	for i, source := range supportedSources {
+		if _, err := fmt.Fprintf(out, "%d) %s\n", i+1, source.Name); err != nil {
+			return "", fmt.Errorf("failed to display AI source options: %w", err)
+		}
+	}
+	if _, err := fmt.Fprint(out, "Choice: "); err != nil {
+		return "", fmt.Errorf("failed to display AI source prompt: %w", err)
+	}
 
 	var choice string
 	if _, err := fmt.Fscanln(in, &choice); err != nil {
