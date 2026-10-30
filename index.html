@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ai-issue — Turn AI Conversations into GitHub Issues</title>
+  <meta name="description" content="Stop losing good AI ideas in chat history. Turn AI conversations into GitHub Issues with one command.">
+  
+  <!-- Tailwind CSS v4 Browser Build -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .mesh-gradient {
+      background: radial-gradient(at 0% 0%, rgba(224, 231, 255, 0.6) 0px, transparent 50%),
+                  radial-gradient(at 100% 0%, rgba(254, 226, 226, 0.5) 0px, transparent 50%),
+                  radial-gradient(at 50% 50%, rgba(254, 243, 199, 0.4) 0px, transparent 50%),
+                  radial-gradient(at 100% 100%, rgba(209, 250, 229, 0.5) 0px, transparent 50%),
+                  radial-gradient(at 0% 100%, rgba(237, 233, 254, 0.6) 0px, transparent 50%);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    @keyframes float-reverse {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(8px) rotate(-1deg); }
+    }
+    .animate-float {
+      animation: float-slow 6s ease-in-out infinite;
+    }
+    .animate-float-reverse {
+      animation: float-reverse 7s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Background Decorative Mesh -->
+  <div class="fixed inset-0 mesh-gradient pointer-events-none -z-10"></div>
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-50 glass-card border-b border-slate-200/60 shadow-xs transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+          <i data-lucide="bot-message-square" class="w-5 h-5"></i>
+        </div>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-extrabold text-xl tracking-tight text-slate-900">ai-issue</span>
+          <span class="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200/60">CLI</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+        <a href="#how-it-works" class="hover:text-indigo-600 transition-colors">작동 방식</a>
+        <a href="#features" class="hover:text-indigo-600 transition-colors">주요 특징</a>
+        <a href="#philosophy" class="hover:text-indigo-600 transition-colors">핵심 철학</a>
+        <a href="#install" class="hover:text-indigo-600 transition-colors">설치하기</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/replworks/ai-issue" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg border border-slate-200/80 shadow-xs transition-all">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span>GitHub</span>
+          <span class="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        </a>
+        <a href="#install" class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs sm:text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-600/30 transition-all hover:shadow-indigo-600/40">
+          <span>시작하기</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-16 pb-20 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-3xl mx-auto">
+        <!-- Friendly Pill Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm font-medium shadow-xs mb-6">
+          <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
+          <span>채팅창 속에 묻혀버리는 반짝이는 AI 아이디어, 이제 그만! 👋</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+          AI와 나눈 대화를 <br class="hidden sm:inline" />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+            단 한 줄로 GitHub Issue
+          </span>로 만드세요
+        </h1>
+
+        <p class="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal">
+          ChatGPT, Claude, Grok, DeepSeek과 나눈 유용한 피드백과 코드를 클립보드에 복사하고 
+          <code class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-semibold border border-indigo-100">ai-issue</code>를 입력하세요. 
+          AI가 아이디어를 제안하고, 당신이 업무를 결정합니다.
+        </p>
+
+        <!-- Command Quick Copy Box -->
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div class="flex items-center bg-slate-900 text-slate-100 px-4 py-3 rounded-xl shadow-lg shadow-slate-900/10 border border-slate-800 font-mono text-sm w-full sm:w-auto justify-between gap-4">
+            <span class="text-emerald-400 select-none">$</span>
+            <span class="text-slate-200 font-medium">brew install replworks/tap/ai-issue</span>
+            <button onclick="copyToClipboard('brew install replworks/tap/ai-issue', this)" class="text-slate-400 hover:text-white transition-colors p-1 rounded-md hover:bg-slate-800" title="Copy command">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <a href="#how-it-works" class="px-5 py-3 text-sm font-bold text-slate-700 bg-white hover:bg-slate-100 rounded-xl border border-slate-200 shadow-sm transition-all w-full sm:w-auto text-center">
+            작동 모습 보기 👀
+          </a>
+        </div>
+
+        <!-- AI Companions Supported Chips -->
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-2.5 text-xs text-slate-500">
+          <span class="font-semibold text-slate-400 mr-1">지원 AI 파트너:</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 border border-slate-200/80 shadow-2xs font-medium text-slate-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> ChatGPT
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 border border-slate-200/80 shadow-2xs font-medium text-slate-700">
+            <span class="w-2 h-2 rounded-full bg-amber-600"></span> Claude
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 border border-slate-200/80 shadow-2xs font-medium text-slate-700">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span> DeepSeek
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 border border-slate-200/80 shadow-2xs font-medium text-slate-700">
+            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Grok
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/80 border border-slate-200/80 shadow-2xs font-medium text-slate-700">
+            <span class="w-2 h-2 rounded-full bg-purple-500"></span> Muse
+          </span>
+        </div>
+      </div>
+
+      <!-- Hero Visual: AI Chat to GitHub Issue Flow -->
+      <div class="mt-14 relative max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+          
+          <!-- Card 1: Chatting with AI -->
+          <div class="lg:col-span-5 glass-card rounded-2xl p-5 shadow-lg border border-slate-200/80 animate-float">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs">
+                  AI
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">Claude / ChatGPT 대화</div>
+                  <div class="text-[10px] text-slate-400">마크다운 응답 생성 중...</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-600 rounded border border-emerald-200">Cmd + C 복사</span>
+            </div>
+
+            <div class="mt-3.5 space-y-2.5 text-xs text-slate-700">
+              <div class="bg-indigo-50/70 p-2.5 rounded-xl border border-indigo-100/70 text-indigo-950">
+                <span class="font-bold">개발자:</span> "로그 시스템에 타임스탬프를 추가하는 개선안을 마크다운으로 정리해줘."
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-200 font-mono text-[11px] leading-relaxed shadow-xs">
+                <div class="font-bold text-slate-900 text-xs mb-1"># Add timestamps to logging system</div>
+                <p class="text-slate-600 mb-2">Current logs do not contain timestamps, making debugging difficult.</p>
+                <div class="text-slate-800 font-semibold mb-1">Acceptance Criteria</div>
+                <ul class="list-disc pl-4 space-y-0.5 text-slate-600">
+                  <li>Include UTC timestamps</li>
+                  <li>Preserve current log format</li>
+                  <li>Add tests</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Connector: The Magical Command -->
+          <div class="lg:col-span-2 flex flex-col items-center justify-center py-2 text-center">
+            <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/30 mb-2">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <div class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-mono text-xs font-semibold shadow-md">
+              $ ai-issue
+            </div>
+            <span class="text-[11px] text-slate-500 font-medium mt-1">클립보드 즉시 변환</span>
+          </div>
+
+          <!-- Card 2: GitHub Issue Created -->
+          <div class="lg:col-span-5 glass-card rounded-2xl p-5 shadow-lg border border-slate-200/80 animate-float-reverse">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                  <i data-lucide="circle-dot" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">GitHub Issue #42</div>
+                  <div class="text-[10px] text-emerald-600 font-semibold">Open • replworks/my-project</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-600 rounded border border-indigo-200">생성 완료 🎉</span>
+            </div>
+
+            <div class="mt-3.5 space-y-3 text-xs">
+              <div class="font-bold text-sm text-slate-900">
+                Add timestamps to logging system
+              </div>
+              
+              <div class="flex items-center gap-2 text-[11px] text-slate-500 pb-2 border-b border-slate-100">
+                <span class="font-medium text-slate-700">@you</span> opened this issue
+                <span>•</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[10px]">AI Source: Claude</span>
+              </div>
+
+              <div class="text-slate-600 text-[11px] space-y-1.5">
+                <p>Current logs do not contain timestamps, making debugging difficult.</p>
+                <div class="font-semibold text-slate-800">Acceptance Criteria</div>
+                <div class="bg-slate-50 p-2 rounded-lg border border-slate-100 font-mono text-[10px]">
+                  - Include UTC timestamps<br>
+                  - Preserve current log format<br>
+                  - Add tests
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works (3 Easy Steps) -->
+  <section id="how-it-works" class="py-20 bg-white/70 border-y border-slate-200/60 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-indigo-600 tracking-wider uppercase mb-2">간단한 3단계 워크플로우</h2>
+        <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight">아이디어가 백로그가 되는 10초의 기적</h3>
+        <p class="mt-3 text-slate-600 text-base">
+          브라우저와 터미널, 깃허브 사이를 헤매며 복사-붙여넣기 창을 수없이 열 필요가 없습니다.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <!-- Step 1 -->
+        <div class="relative bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow group">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg mb-5 group-hover:scale-110 transition-transform">
+            1
+          </div>
+          <h4 class="text-lg font-bold text-slate-900 mb-2">AI와 편하게 대화 & 복사</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            AI와 토론하며 도출된 최적의 기능 명세나 버그 분석 마크다운을 클립보드로 가볍게 복사(<kbd class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border text-xs">Cmd+C</kbd>)합니다.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-medium text-slate-500">
+            <i data-lucide="message-square" class="w-4 h-4 text-indigo-500"></i>
+            <span>ChatGPT, Claude, Grok 등 모두 호환</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="relative bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow group">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-black text-lg mb-5 group-hover:scale-110 transition-transform">
+            2
+          </div>
+          <h4 class="text-lg font-bold text-slate-900 mb-2">터미널에서 ai-issue 실행</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            해당 프로젝트 디렉터리에서 <code class="text-indigo-600 font-semibold font-mono">ai-issue</code>를 입력하세요. 출처 AI를 선택하고 등록될 내용을 한눈에 미리 확인합니다.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-medium text-slate-500">
+            <i data-lucide="terminal" class="w-4 h-4 text-purple-500"></i>
+            <span>미리보기 모드(--dry-run) 지원</span>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="relative bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow group">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-lg mb-5 group-hover:scale-110 transition-transform">
+            3
+          </div>
+          <h4 class="text-lg font-bold text-slate-900 mb-2">즉시 GitHub 이슈 생성!</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            마크다운 제목과 본문이 완벽하게 분리되어 깃허브 이슈로 등록되고, 발급된 이슈 링크가 터미널에 바로 표시됩니다.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-medium text-slate-500">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+            <span>팀원들과 즉시 공유 & 작업 착수</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Highlights & Philosophy -->
+  <section id="philosophy" class="py-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold mb-4">
+            <i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>
+            <span>ai-issue의 핵심 철학</span>
+          </div>
+          <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            AI는 제안하고, <br>
+            결정은 사람이 합니다.
+          </h3>
+          <p class="mt-4 text-slate-600 leading-relaxed text-base">
+            AI에게 전체 프로젝트의 모든 권한을 덜컥 맡기지 마세요. 
+            <strong>ai-issue</strong>는 사람과 AI가 가장 건강하게 협업하는 방식을 만듭니다.
+          </p>
+
+          <div class="mt-8 space-y-4">
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h5 class="text-sm font-bold text-slate-900">AI Source ≠ GitHub Opener</h5>
+                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                  이슈를 발행하는 주체는 언제나 인증된 개발자(당신)입니다. AI는 출처(AI Source)로 투명하게 기재되어 책임 소재를 명확히 합니다.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h5 class="text-sm font-bold text-slate-900">발행 전 철저한 사전 검토</h5>
+                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                  AI가 작성한 환각이나 불필요한 내용이 없는지 미리보기와 확인 절차를 거치므로 깔끔하고 정돈된 백로그만 남습니다.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h5 class="text-sm font-bold text-slate-900">PAT 고통 없는 안전한 GitHub App 연동</h5>
+                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                  조직(Organization)이 늘어날 때마다 복잡하게 토큰을 재발급받을 필요 없이, GitHub Device Flow 기반으로 편리하고 안전하게 동작합니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Comparison / Terminal Preview -->
+        <div class="bg-slate-900 rounded-2xl p-6 text-slate-200 shadow-xl border border-slate-800 font-mono text-xs sm:text-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+              <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+              <span class="ml-2 text-xs text-slate-400 font-sans font-medium">Terminal — ai-issue session</span>
+            </div>
+            <span class="text-[11px] text-slate-500">interactive</span>
+          </div>
+
+          <div class="mt-4 space-y-2.5 font-mono leading-relaxed">
+            <div>
+              <span class="text-indigo-400">~/my-awesome-project</span> <span class="text-emerald-400">(main)</span>
+            </div>
+            <div class="text-slate-100 font-bold">
+              $ ai-issue
+            </div>
+            <div class="text-slate-400 pl-2">
+              [?] Select AI Source:<br>
+              &nbsp;&nbsp;&gt; <span class="text-indigo-400 font-semibold">Claude</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;ChatGPT<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;DeepSeek<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;Other
+            </div>
+            <div class="p-3 my-2 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 text-xs">
+              <div class="text-slate-400 font-sans text-[11px] mb-1">Previewing Issue to create:</div>
+              <div class="text-amber-300 font-bold">Title: Add timestamps to logging system</div>
+              <div class="text-slate-400 mt-1">Repo: replworks/my-awesome-project</div>
+            </div>
+            <div class="text-slate-100">
+              [?] Create this issue on GitHub? <span class="text-emerald-400 font-bold">[Y/n]</span> Y
+            </div>
+            <div class="text-emerald-400 font-bold pt-2 flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>✅ Issue created successfully!</span>
+            </div>
+            <div class="text-sky-300 underline pl-6">
+              https://github.com/replworks/my-awesome-project/issues/42
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="py-20 bg-slate-100/60 border-t border-slate-200/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-xs font-bold text-indigo-600 tracking-wider uppercase mb-2">스마트한 개발자 경험</h2>
+        <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight">작지만 강력한 기능들</h3>
+        <p class="mt-3 text-slate-600 text-base">
+          매일 AI를 끼고 코딩하는 엔지니어의 손가락 피로도를 0으로 만들기 위해 세심하게 설계되었습니다.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Feature 1 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
+            <i data-lucide="clipboard" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">클립보드 스마트 파싱</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            클립보드에 담긴 마크다운의 첫 번째 헤딩(#)을 이슈 제목으로 추출하고 나머지를 깔끔한 본문으로 자동 분리합니다.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
+            <i data-lucide="building-2" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">다중 조직 & 멀티 레포</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            GitHub App Device Flow 방식을 사용하여 복잡한 토큰 교체 없이 여러 조직의 비공개/공개 레포지토리에 자연스럽게 발행합니다.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+            <i data-lucide="stethoscope" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">내장 진단 도구 (diagnose)</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            토큰 유효성, 레포 쓰기 권한, 앱 설치 상태를 <code class="font-mono text-xs bg-slate-100 px-1 py-0.5 rounded">ai-issue diagnose</code> 한 번으로 즉시 진단합니다.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+            <i data-lucide="play-circle" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">안전한 드라이런 (--dry-run)</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            실제로 GitHub에 이슈를 등록하기 전에 파싱된 제목과 본문 마크다운을 터미널에서 사전에 안심하고 점검하세요.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mb-4">
+            <i data-lucide="tag" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">비대화형 플래그 지원</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            스크립트나 단축키로 쓸 때는 <code class="font-mono text-xs bg-slate-100 px-1 py-0.5 rounded">ai-issue --ai claude</code>처럼 인자를 전달해 프롬프트 없이 즉시 발행할 수 있습니다.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="glass-card p-6 rounded-2xl hover:translate-y-[-2px] transition-all">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center mb-4">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base mb-1.5">가벼운 단일 바이너리 (Go)</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            외부 런타임 없이 초고속으로 실행되는 순수 Go 바이너리입니다. macOS(Intel/Apple Silicon), Linux, Windows를 지원합니다.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation & Quick Start -->
+  <section id="install" class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-xs font-bold text-indigo-600 tracking-wider uppercase mb-2">간편 설치</h2>
+        <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight">선호하는 패키지 매니저로 설치하세요</h3>
+        <p class="mt-2 text-slate-600 text-sm">
+          Homebrew, Debian/Ubuntu APT, 또는 Go toolchain을 통해 손쉽게 설치할 수 있습니다.
+        </p>
+      </div>
+
+      <!-- Installation Tabs -->
+      <div class="glass-card rounded-2xl p-6 shadow-md border border-slate-200">
+        <!-- Tab Buttons -->
+        <div class="flex items-center gap-2 border-b border-slate-200 pb-3 mb-4 text-sm font-semibold">
+          <button onclick="switchTab('brew')" id="tab-btn-brew" class="tab-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs transition-all flex items-center gap-1.5">
+            <i data-lucide="apple" class="w-4 h-4"></i>
+            <span>Homebrew (권장)</span>
+          </button>
+          <button onclick="switchTab('apt')" id="tab-btn-apt" class="tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-1.5">
+            <i data-lucide="terminal-square" class="w-4 h-4"></i>
+            <span>Debian / Ubuntu</span>
+          </button>
+          <button onclick="switchTab('go')" id="tab-btn-go" class="tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-1.5">
+            <i data-lucide="boxes" class="w-4 h-4"></i>
+            <span>Go Install</span>
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div id="tab-content-brew" class="tab-content">
+          <div class="relative bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-sm leading-relaxed flex items-center justify-between">
+            <span>brew install replworks/tap/ai-issue</span>
+            <button onclick="copyToClipboard('brew install replworks/tap/ai-issue', this)" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-all">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">macOS 및 Linuxbrew 환경에 가장 권장되는 설치 방법입니다.</p>
+        </div>
+
+        <div id="tab-content-apt" class="tab-content hidden">
+          <div class="relative bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto">
+            <button onclick="copyToClipboard(`sudo mkdir -p /etc/apt/keyrings\ncurl -fsSL https://apt.repl.net/replworks.gpg | sudo tee /etc/apt/keyrings/replworks.gpg >/dev/null\necho &quot;deb [signed-by=/etc/apt/keyrings/replworks.gpg] https://apt.repl.net stable main&quot; | sudo tee /etc/apt/sources.list.d/replworks.list\nsudo apt update\nsudo apt install ai-issue`, this)" class="absolute top-3 right-3 text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-all">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <pre class="text-slate-200">sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://apt.repl.net/replworks.gpg | sudo tee /etc/apt/keyrings/replworks.gpg >/dev/null
+echo "deb [signed-by=/etc/apt/keyrings/replworks.gpg] https://apt.repl.net stable main" | sudo tee /etc/apt/sources.list.d/replworks.list
+sudo apt update
+sudo apt install ai-issue</pre>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">클립보드 유틸리티(xclip, xsel, wl-clipboard)가 함께 자동 구성됩니다.</p>
+        </div>
+
+        <div id="tab-content-go" class="tab-content hidden">
+          <div class="relative bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-sm leading-relaxed flex items-center justify-between">
+            <span>go install github.com/replworks/ai-issue/cmd/ai-issue@latest</span>
+            <button onclick="copyToClipboard('go install github.com/replworks/ai-issue/cmd/ai-issue@latest', this)" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-all">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Go 1.22+ 개발 환경에서 소스로부터 직접 컴파일하여 설치합니다.</p>
+        </div>
+
+        <!-- Quick 2-Step Initial Setup -->
+        <div class="mt-8 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div class="text-xs font-bold text-indigo-600 mb-1">Step 1. 최초 1회 로그인</div>
+            <div class="font-mono text-xs bg-slate-200/70 text-slate-800 p-2 rounded mb-2 select-all">
+              ai-issue login
+            </div>
+            <p class="text-[12px] text-slate-600">
+              브라우저가 열리면 화면에 표시되는 8자리 디바이스 코드를 입력하여 안전하게 토큰을 발급받습니다.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div class="text-xs font-bold text-indigo-600 mb-1">Step 2. 깃허브 앱 설치 & 권한 확인</div>
+            <a href="https://github.com/apps/ai-issue/installations/new" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:underline mb-2">
+              GitHub App 설치하러 가기 <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+            <p class="text-[12px] text-slate-600">
+              이슈를 등록할 레포지토리에 앱을 설치하고, <code class="font-mono bg-slate-200/70 px-1 py-0.5 rounded text-[11px]">ai-issue diagnose</code>로 상태를 검증하세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Friendly Call To Action -->
+  <section class="py-16 text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-indigo-100 shadow-xl relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-200/40 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-pink-200/40 rounded-full blur-2xl"></div>
+
+        <div class="relative z-10">
+          <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-600/30">
+            <i data-lucide="rocket" class="w-7 h-7"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            오늘 나눈 AI와의 대화, 지금 바로 이슈로 등록해보세요!
+          </h2>
+          <p class="mt-3 text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
+            "나중에 정리해야지" 하고 닫아버린 채팅창 속에 있던 기발한 아이디어들을 이제 팀의 프로덕트 자산으로 연결하세요.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a href="https://github.com/replworks/ai-issue" target="_blank" rel="noreferrer" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold shadow-md transition-all inline-flex items-center gap-2">
+              <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
+              <span>GitHub Star 주기</span>
+            </a>
+            <a href="#how-it-works" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-bold border border-slate-200 shadow-xs transition-all">
+              기능 다시보기
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200/80 bg-white/60 py-10 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+          <i data-lucide="bot" class="w-3.5 h-3.5"></i>
+        </div>
+        <span class="font-bold text-slate-800">ai-issue</span>
+        <span>•</span>
+        <span>MIT License</span>
+        <span>•</span>
+        <span>Built for developers who use AI every day</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/replworks/ai-issue" target="_blank" class="hover:text-indigo-600 transition-colors">GitHub Repository</a>
+        <a href="https://github.com/replworks/ai-issue/blob/main/LICENSE" target="_blank" class="hover:text-indigo-600 transition-colors">License</a>
+        <a href="https://pkg.go.dev/github.com/replworks/ai-issue" target="_blank" class="hover:text-indigo-600 transition-colors">Go Reference</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Simple Vanilla Script for Tabs & Clipboard Copy -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-xs');
+        btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+      });
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      const selectedBtn = document.getElementById('tab-btn-' + tabId);
+      const selectedContent = document.getElementById('tab-content-' + tabId);
+
+      if (selectedBtn && selectedContent) {
+        selectedBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-xs');
+        selectedBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        selectedContent.classList.remove('hidden');
+      }
+    }
+
+    // Copy to clipboard helper
+    function copyToClipboard(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btnElement.innerHTML = originalHtml;
+          lucide.createIcons();
+        }, 2000);
+      }).catch(err => {
+        console.error('Copy failed:', err);
+      });
+    }
+  </script>
+</body>
+</html>
+
