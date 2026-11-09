@@ -1,5 +1,14 @@
 # Release Notes
 
+## v1.3.2 - 2026-11-09
+
+### What's Changed
+
+* feat: guide login toward the issue-opening account by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/59
+* chore: update agent workflow and add ask-human script by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/60
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.3.1...v1.3.2
+
 ## v1.3.1 - 2026-11-09
 
 ### What's Changed
