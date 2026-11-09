@@ -12,6 +12,7 @@ func TestResolveSupportedSources(t *testing.T) {
 	}{
 		{input: "chatgpt", want: "ChatGPT"},
 		{input: "Claude", want: "Claude"},
+		{input: "gemini", want: "Gemini"},
 		{input: " muse ", want: "Muse"},
 		{input: "grok", want: "Grok"},
 		{input: "deepseek", want: "DeepSeek"},
@@ -37,7 +38,9 @@ func TestSelectInteractive(t *testing.T) {
 	if got != "Claude" {
 		t.Fatalf("Select = %q, want Claude", got)
 	}
-	if !strings.Contains(out.String(), "1) ChatGPT") || !strings.Contains(out.String(), "5) DeepSeek") {
+	if !strings.Contains(out.String(), "1) ChatGPT") ||
+		!strings.Contains(out.String(), "3) Gemini") ||
+		!strings.Contains(out.String(), "6) DeepSeek") {
 		t.Fatalf("selection prompt = %q, want all supported sources", out.String())
 	}
 }

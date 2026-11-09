@@ -15,6 +15,7 @@ type Source struct {
 var supportedSources = []Source{
 	{ID: "chatgpt", Name: "ChatGPT"},
 	{ID: "claude", Name: "Claude"},
+	{ID: "gemini", Name: "Gemini"},
 	{ID: "muse", Name: "Muse"},
 	{ID: "grok", Name: "Grok"},
 	{ID: "deepseek", Name: "DeepSeek"},
@@ -31,7 +32,7 @@ func Resolve(value string) (string, error) {
 			return source.Name, nil
 		}
 	}
-	return "", fmt.Errorf("unsupported AI source %q; choose chatgpt, claude, muse, grok, or deepseek", value)
+	return "", fmt.Errorf("unsupported AI source %q; choose chatgpt, claude, gemini, muse, grok, or deepseek", value)
 }
 
 func Select(value string, in io.Reader, out io.Writer) (string, error) {

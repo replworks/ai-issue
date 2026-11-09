@@ -29,7 +29,7 @@ Acceptance Criteria:
 
 ### AI Source Attribution
 
-* [X] Support conversational AI source selection for ChatGPT, Claude, Muse, Grok, and DeepSeek
+* [X] Support conversational AI source selection for ChatGPT, Claude, Gemini, Muse, Grok, and DeepSeek
 * [X] Support interactive AI source selection during publication
 * [X] Support `--ai` source selection
 * [X] Append the selected AI source to the issue body as plain text

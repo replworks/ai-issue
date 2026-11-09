@@ -11,7 +11,7 @@
 >
 > Turn AI conversations into GitHub Issues with one command.
 
-AI Issue Publisher converts AI-generated markdown from ChatGPT, Claude, Muse, Grok, and DeepSeek into GitHub Issues.
+AI Issue Publisher converts AI-generated markdown from ChatGPT, Claude, Gemini, Muse, Grok, and DeepSeek into GitHub Issues.
 
 The AI writes the idea. Humans decide whether it becomes work.
 

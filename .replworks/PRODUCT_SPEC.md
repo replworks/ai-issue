@@ -207,6 +207,7 @@ Supported sources are:
 
 * ChatGPT
 * Claude
+* Gemini
 * Muse
 * Grok
 * DeepSeek
