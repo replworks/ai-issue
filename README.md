@@ -95,6 +95,11 @@ The trade-off: setup has two moving parts (the app installation and the account'
    ai-issue login
 ```
 
+`ai-issue login` prints a reminder before authorization: sign in to GitHub
+with the account that should open the issues. If you want a bot account to be
+the opener, sign in as that bot first. If your browser is signed in to another
+account, sign out or use a private window.
+
 This will:
 
 - open the GitHub device login page

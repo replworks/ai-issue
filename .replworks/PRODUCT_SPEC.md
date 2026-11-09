@@ -224,6 +224,8 @@ The product uses a GitHub App user access token obtained through device flow aut
 
 The user authenticates with the `ai-issue login` command.
 
+Before authorization, the product must instruct the user to sign in with the GitHub account that should open the issues, including when that account is a bot.
+
 The token is stored locally and reused for publishing and diagnostics.
 
 ---
