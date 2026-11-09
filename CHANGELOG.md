@@ -1,5 +1,16 @@
 # Release Notes
 
+## v1.3.1 - 2026-11-09
+
+### What's Changed
+
+* feat: add landing page and GitHub Pages workflow by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/55
+* ci: update pages deployment workflow by [@cable8mm](https://github.com/cable8mm) in https://github.com/replworks/ai-issue/pull/56
+* fix: improve mobile responsiveness and in-app browser layout by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/57
+* feat: add Gemini and custom AI source names by [@replworks-bot](https://github.com/replworks-bot) in https://github.com/replworks/ai-issue/pull/58
+
+**Full Changelog**: https://github.com/replworks/ai-issue/compare/v1.3.0...v1.3.1
+
 ## v1.3.0 - 2026-10-20
 
 ### What's Changed
