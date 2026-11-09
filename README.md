@@ -231,6 +231,14 @@ The same selection can be supplied non-interactively:
 ai-issue --ai claude
 ```
 
+If the AI is not in the list, choose `Other` and enter its name, or pass the name directly:
+
+```bash
+ai-issue --ai Perplexity
+```
+
+Custom names are preserved as typed and must be a single line of 1 to 40 characters.
+
 ---
 
 ## Troubleshooting

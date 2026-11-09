@@ -30,6 +30,7 @@ Acceptance Criteria:
 ### AI Source Attribution
 
 * [X] Support conversational AI source selection for ChatGPT, Claude, Gemini, Muse, Grok, and DeepSeek
+* [X] Support custom AI source names via `Other` and `--ai`
 * [X] Support interactive AI source selection during publication
 * [X] Support `--ai` source selection
 * [X] Append the selected AI source to the issue body as plain text
@@ -39,6 +40,8 @@ Acceptance Criteria:
 
 * Publication asks for an AI source when `--ai` is not provided
 * `--ai` accepts each supported source without prompting
+* Interactive selection offers `Other` and prompts for a custom name
+* `--ai` accepts a custom name that is a single line of 1 to 40 characters
 * The issue body contains exactly one `AI Source: <name>` metadata line
 * The issue does not contain publisher metadata
 

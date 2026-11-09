@@ -212,6 +212,8 @@ Supported sources are:
 * Grok
 * DeepSeek
 
+When the conversational AI is not in the supported list, the user may select `Other` during interactive selection or provide the name through `--ai`. A custom name is preserved as typed except for surrounding whitespace, and must be a single line of 1 to 40 characters without control characters.
+
 The GitHub account that creates the issue is provided by GitHub authentication and must not be duplicated as publisher metadata in the issue body.
 
 ---
