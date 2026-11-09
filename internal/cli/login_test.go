@@ -3,6 +3,7 @@ package cli
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/replworks/ai-issue/internal/adapter/github"
@@ -43,8 +44,16 @@ func TestRunLoginSavesToken(t *testing.T) {
 	}
 	defer func() { clipboardWriteAll = oldClipboard }()
 
-	if err := runLogin(t.Context()); err != nil {
+	var out strings.Builder
+	if err := runLogin(t.Context(), &out); err != nil {
 		t.Fatalf("runLogin error: %v", err)
+	}
+
+	if !strings.Contains(out.String(), "account that should open the issues") {
+		t.Fatalf("login output = %q, want account guidance", out.String())
+	}
+	if !strings.Contains(out.String(), "sign in as that bot before authorizing") {
+		t.Fatalf("login output = %q, want bot account guidance", out.String())
 	}
 
 	if deviceCalls != 1 {

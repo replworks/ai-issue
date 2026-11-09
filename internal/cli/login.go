@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"io"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -20,31 +21,37 @@ var loginCmd = &cobra.Command{
 	Short:        "Authenticate with GitHub App device flow",
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return runLogin(cmd.Context())
+		return runLogin(cmd.Context(), cmd.OutOrStdout())
 	},
 }
 
 var clipboardWriteAll = clipboard.WriteAll
 
-func runLogin(ctx context.Context) error {
+func runLogin(ctx context.Context, out io.Writer) error {
+	_, _ = fmt.Fprint(out, `Sign in to GitHub with the account that should open the issues.
+If issues should be opened by a bot, sign in as that bot before authorizing.
+If your browser is signed in to a different account, sign out or use a private window.
+
+`)
+
 	clientID := config.GitHubAppClientID()
 	device, err := github.RequestDeviceCode(clientID)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Open this URL in your browser:")
-	fmt.Println(device.VerificationURI)
-	fmt.Printf("Enter this code: %s\n", device.UserCode)
+	_, _ = fmt.Fprintln(out, "Open this URL in your browser:")
+	_, _ = fmt.Fprintln(out, device.VerificationURI)
+	_, _ = fmt.Fprintf(out, "Enter this code: %s\n", device.UserCode)
 	if strings.TrimSpace(device.UserCode) != "" {
 		if err := clipboardWriteAll(device.UserCode); err == nil {
-			fmt.Println("Code copied to clipboard. Paste it on the GitHub page.")
+			_, _ = fmt.Fprintln(out, "Code copied to clipboard. Paste it on the GitHub page.")
 		}
 	}
 	if err := openBrowser(device.VerificationURI); err == nil {
-		fmt.Println("Browser opened automatically.")
+		_, _ = fmt.Fprintln(out, "Browser opened automatically.")
 	} else {
-		fmt.Printf("Could not open browser automatically: %v\n", err)
+		_, _ = fmt.Fprintf(out, "Could not open browser automatically: %v\n", err)
 	}
 
 	interval := time.Duration(device.Interval) * time.Second
@@ -82,7 +89,7 @@ func runLogin(ctx context.Context) error {
 		if err := config.SaveToken(token.AccessToken); err != nil {
 			return err
 		}
-		fmt.Println("Login successful. Token saved locally.")
+		_, _ = fmt.Fprintln(out, "Login successful. Token saved locally.")
 		return nil
 	}
 
