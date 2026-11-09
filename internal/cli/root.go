@@ -39,7 +39,7 @@ func init() {
 	rootCmd.Version = appVersion
 	rootCmd.SetVersionTemplate("{{.Name}} {{.Version}}\n")
 	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Display the issue preview without creating a GitHub Issue")
-	rootCmd.PersistentFlags().StringVar(&aiSource, "ai", "", "AI source: chatgpt, claude, muse, grok, or deepseek")
+	rootCmd.PersistentFlags().StringVar(&aiSource, "ai", "", "AI source: chatgpt, claude, gemini, muse, grok, deepseek, or a custom name")
 	rootCmd.AddCommand(publishCmd)
 	rootCmd.AddCommand(diagnoseCmd)
 	rootCmd.AddCommand(loginCmd)

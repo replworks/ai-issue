@@ -5,7 +5,11 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
+
+const maxSourceNameLength = 40
 
 type Source struct {
 	ID   string
@@ -15,6 +19,7 @@ type Source struct {
 var supportedSources = []Source{
 	{ID: "chatgpt", Name: "ChatGPT"},
 	{ID: "claude", Name: "Claude"},
+	{ID: "gemini", Name: "Gemini"},
 	{ID: "muse", Name: "Muse"},
 	{ID: "grok", Name: "Grok"},
 	{ID: "deepseek", Name: "DeepSeek"},
@@ -25,13 +30,33 @@ func Supported() []Source {
 }
 
 func Resolve(value string) (string, error) {
-	value = strings.ToLower(strings.TrimSpace(value))
+	name := strings.TrimSpace(value)
+	if name == "" {
+		return "", fmt.Errorf("AI source is required")
+	}
+
 	for _, source := range supportedSources {
-		if value == source.ID || value == strings.ToLower(source.Name) {
+		if strings.EqualFold(name, source.ID) || strings.EqualFold(name, source.Name) {
 			return source.Name, nil
 		}
 	}
-	return "", fmt.Errorf("unsupported AI source %q; choose chatgpt, claude, muse, grok, or deepseek", value)
+
+	if err := validateCustomName(name); err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
+func validateCustomName(name string) error {
+	if utf8.RuneCountInString(name) > maxSourceNameLength {
+		return fmt.Errorf("invalid AI source name %q; enter %d characters or fewer", name, maxSourceNameLength)
+	}
+	for _, r := range name {
+		if unicode.IsControl(r) {
+			return fmt.Errorf("invalid AI source name %q; enter a single line without control characters", name)
+		}
+	}
+	return nil
 }
 
 func Select(value string, in io.Reader, out io.Writer) (string, error) {
@@ -47,17 +72,53 @@ func Select(value string, in io.Reader, out io.Writer) (string, error) {
 			return "", fmt.Errorf("failed to display AI source options: %w", err)
 		}
 	}
+	if _, err := fmt.Fprintf(out, "%d) Other\n", len(supportedSources)+1); err != nil {
+		return "", fmt.Errorf("failed to display AI source options: %w", err)
+	}
 	if _, err := fmt.Fprint(out, "Choice: "); err != nil {
 		return "", fmt.Errorf("failed to display AI source prompt: %w", err)
 	}
 
-	var choice string
-	if _, err := fmt.Fscanln(in, &choice); err != nil {
+	choice, err := readLine(in)
+	if err != nil {
 		return "", fmt.Errorf("AI source selection is required")
 	}
-	index, err := strconv.Atoi(strings.TrimSpace(choice))
-	if err != nil || index < 1 || index > len(supportedSources) {
-		return "", fmt.Errorf("invalid AI source choice %q; choose a number from 1 to %d", choice, len(supportedSources))
+	index, err := strconv.Atoi(choice)
+	if err != nil || index < 1 || index > len(supportedSources)+1 {
+		return "", fmt.Errorf("invalid AI source choice %q; choose a number from 1 to %d", choice, len(supportedSources)+1)
+	}
+	if index == len(supportedSources)+1 {
+		if _, err := fmt.Fprint(out, "AI name: "); err != nil {
+			return "", fmt.Errorf("failed to display AI source prompt: %w", err)
+		}
+		name, err := readLine(in)
+		if err != nil {
+			return "", fmt.Errorf("AI source name is required")
+		}
+		return Resolve(name)
 	}
 	return supportedSources[index-1].Name, nil
+}
+
+func readLine(reader io.Reader) (string, error) {
+	var line strings.Builder
+	buf := make([]byte, 1)
+	for {
+		n, err := reader.Read(buf)
+		if n > 0 {
+			if buf[0] == '\n' {
+				return strings.TrimSpace(line.String()), nil
+			}
+			if buf[0] != '\r' {
+				line.WriteByte(buf[0])
+			}
+		}
+		if err != nil {
+			value := strings.TrimSpace(line.String())
+			if value == "" {
+				return "", err
+			}
+			return value, nil
+		}
+	}
 }
